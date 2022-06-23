@@ -16,7 +16,7 @@ export async function get(location = "ProjectMangmentAuth") {
         let a = []
         const querySnapshot = await getDocs(collection(db, location));
         querySnapshot.forEach((m) => {
-            a.push(m)
+            a.push(m.data())
         })
         return a
 
@@ -54,7 +54,7 @@ export async function getTask(location = "ProjectMangmentAuth" , userid) {
         const q = query(collection(db, location), where("userid", "==", userid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((m) => {
-            a.push({id:m.id,task:m.data().task})
+            a.push({id:m.id,task:m.data()})
         })
         return a
     } catch (error) {

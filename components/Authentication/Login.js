@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import React from 'react'
 import { LoginMethod } from '../firebase/Auth'
 import { usernameState } from '../GlobalState/Globalstate'
-import { createState, useState } from '@hookstate/core';
+import { useState } from '@hookstate/core';
 
 const Login = ({ navigation }) => {
     const [email, setEmail] = React.useState("")
