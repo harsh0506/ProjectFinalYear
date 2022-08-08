@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../Authentication/Login';
@@ -11,39 +11,35 @@ import { useState } from '@hookstate/core';
 import { usernameState } from '../GlobalState/Globalstate';
 import { getTask } from '../firebase/Crud';
 import { checkauth } from '../firebase/Auth';
+import Createproj1 from '../Project/Createproj1';
+import Project from '../Project/Project';
 
 
 const auth = getAuth(app)
 const Stack = createNativeStackNavigator();
 
 const MainNavigation = () => {
-    const user = auth.currentUser
-     const [userM,setUserM] = React.useState({
-        id:"",
-        email:""
-     })
-    const [tasklist, setTasklist] = React.useState("")
-    const username = useState(usernameState)
-    
+    const [userM, setUserM] = React.useState({
+        id: "",
+        email: ""
+    })
+    const [tasklist, setTasklist] = React.useState([])
+
+
+
+    useEffect(async () => {
+        checkauths()
+    }, [])
+
     const checkauths = () => {
         onAuthStateChanged(auth, (user) => (user !== null) ? setUserM({ id: user.uid, email: user.email }) : console.log("error"))
     }
-    React.useEffect(async () => {
-       checkauths()
-       await checkauth()
-    }, [])
-    if (userM.id !== null){
-        console.log(userM.id)
-        getTask("Task",userM.id).then((dm)=> console.log(dm)).catch(err => console.log(err))
-       }
 
-    const geD = async()=>{
-        const d = await getTask("task" , userM.id)
-        console.log(d)
-    }   
+    (userM.id !== null) ? getTask("Task", userM.id).then((dm) => setTasklist(dm)).catch(err => console.log(err)) : console.log("userid id null")
+
     if (userM === null) {
         return (
-            <View style={{ width: "100%", height: "100%" }}>
+            <View >
                 <NavigationContainer >
                     <Stack.Navigator >
                         <Stack.Screen name="Login" component={Login} />
@@ -59,6 +55,10 @@ const MainNavigation = () => {
             <NavigationContainer>
                 <Stack.Navigator>
                     <Stack.Screen name="Home" component={Home} />
+                    <Stack.Screen name="Createproj1" component={Createproj1} />
+                    <Stack.Screen name="signin" component={Signin} />
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Project" component={Project} />
                 </Stack.Navigator>
             </NavigationContainer>
         </View>

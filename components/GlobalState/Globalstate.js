@@ -3,8 +3,13 @@
 import { createState } from '@hookstate/core';
 //global state to set usermail and id
 export const usernameState = createState({
-    email:"",
-    id:""
+    userEmail:"",
+    userId:"",
+    userName:"",
+    profilepic:"",
+    githubUrl:"",
+    projects:[],
+    Teams:[]
 });
 //global state to store tasklist of user
 export const taskListState = createState([])

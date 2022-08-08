@@ -2,6 +2,8 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import React from 'react'
 import { SigninMethod } from '../firebase/Auth'
 import { set } from '../firebase/Crud'
+import { height, width } from '../Dimentions/Dimensions'
+import axios from "axios"
 
 const Signin = ({navigation}) => {
     const [userName, setUsername] = React.useState("")
@@ -10,13 +12,15 @@ const Signin = ({navigation}) => {
     const getSignin = async () => {
         try {
             const res = await SigninMethod(email, passWord)
+            res.userName = userName
+            await axios.post("http://localhost:4000/user" , res)
             console.log(res)
             navigation.push("Home")
             set({userName,passWord , res })
         } catch (error) { console.log(error) }
     }
     return (
-        <View>
+        <View style={styles.Main}>
             <View>
                 <Text>signin part</Text>
             </View>
@@ -44,8 +48,13 @@ const Signin = ({navigation}) => {
             </View>
         </View>
     )
+    
 }
 
 export default Signin
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    Main:{
+height,width
+    }
+})

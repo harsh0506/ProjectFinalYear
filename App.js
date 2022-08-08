@@ -4,11 +4,12 @@ import MainNavigation from './components/Navigation/MainNavigtaion';
 
 const App = () => {
   return (
-    <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <MainNavigation />
     </View>
   );
 };
+
 
 export default App;
 
