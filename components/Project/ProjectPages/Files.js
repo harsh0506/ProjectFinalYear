@@ -7,7 +7,7 @@ import { app, storage } from '../../firebase/FirebaseConfig';
 import { ListItems, UploadDocs } from '../../Helper';
 
 const UploadImg = () => {
-    let projId = "eufeufheiuh7236"
+    let projId = "oel7p"
     const [fileInfo, setFileInfo] = React.useState({
         fileType: "",
         fileName: "",
@@ -18,7 +18,7 @@ const UploadImg = () => {
         const m = ListItems(projId)
         console.log(m)
     }, [])
-
+    let adderId = "HB9NyODKMPYImstDR0pcROImoFa2"
     
 
     const downloadurl = () => {
@@ -33,7 +33,7 @@ const UploadImg = () => {
 
     return (
         <View>
-            <TouchableOpacity onPress={()=>{UploadDocs(projId)}}
+            <TouchableOpacity onPress={()=>{UploadDocs(projId , adderId)}}
                 style={{ backgroundColor: "blue" }}
             >
                 <Text>index</Text>

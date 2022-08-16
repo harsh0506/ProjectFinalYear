@@ -13,10 +13,10 @@ const Signin = ({navigation}) => {
         try {
             const res = await SigninMethod(email, passWord)
             res.userName = userName
-            await axios.post("http://localhost:4000/user" , res)
+           const data =  await axios.post("http://localhost:4000/user" , res)
             console.log(res)
             navigation.push("Home")
-            set({userName,passWord , res })
+           // set({userName,passWord , res })
         } catch (error) { console.log(error) }
     }
     return (

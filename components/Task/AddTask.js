@@ -1,19 +1,28 @@
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
-import { usernameState } from '../GlobalState/Globalstate'
+import { projectState, usernameState } from '../GlobalState/Globalstate'
 import { createState, useState } from '@hookstate/core';
 import { set } from "../firebase/Crud"
+import axios from 'axios';
 const AddTask = () => {
-    const state = useState(usernameState)
-    const [task, setTask] = React.useState("")
-    let res = state.get()
+    const state = useState(projectState)
+    const [taskName, setTaskName] = React.useState("")
+    const [progress, setProgress] = React.useState("0%")
+    const [submissionDate, setSubmissionDate] = React.useState("15-09-22")
+    let res1 = state.get().projectId
+    let taskId = Math.random().toString(36).slice(7)
     const data = {
-        task: task,
-        userid: res.id
+        "TaskList": {
+            taskName,
+            userId:"hdknficw38t4ubifr20#7din ",
+            progress, submissionDate,
+            dateOfCreation: Date.now(),
+            taskId
+        }
     }
     const setdata = async () => {
         try {
-            const res = await set(data, "Task")
+            const res = await axios.put(`http://localhost:4000/projects/arrAdd/${res1}`,data)
             console.log(res)
         } catch (error) { console.log(error) }
     }
@@ -23,8 +32,8 @@ const AddTask = () => {
             <View>
                 <TextInput
                     placeholder='add task'
-                    value={task}
-                    onChangeText={setTask}
+                    value={taskName}
+                    onChangeText={setTaskName}
                 />
                 <Button title='click' onPress={setdata} />
             </View>

@@ -4,12 +4,12 @@ import UploadImg from './ProjectPages/Files'
 import ProjetNavigation from '../Navigation/ProjetNavigation'
 import { height, width } from '../Dimentions/Dimensions'
 
-const Project = ({route}) => {
-    console.log(route.params)
+const Project = ({ route }) => {
+  console.log(route.params.projectName)
   return (
     <View style={styles.Main}>
-      <Text>Project</Text>
-      <ProjetNavigation />
+      <Text>Project {route.params.projectName}</Text>
+      <ProjetNavigation projDetail={route.params} />
     </View>
   )
 }
@@ -17,7 +17,7 @@ const Project = ({route}) => {
 export default Project
 
 const styles = StyleSheet.create({
-Main:{
-  height:height,width:width,
-}
+  Main: {
+    height: height, width: width,
+  }
 })

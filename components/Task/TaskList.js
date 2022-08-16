@@ -1,14 +1,14 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { createState, useState } from '@hookstate/core';
-import { taskListState } from '../GlobalState/Globalstate';
+import { projectState, taskListState } from '../GlobalState/Globalstate';
 import { height, width } from '../Dimentions/Dimensions';
 import { deleteDocs } from '../firebase/Crud';
 const TaskList = () => {
-    const state = useState(taskListState)
+    const state = useState(projectState)
     const [data, setData] = React.useState([])
     let res  = state.get() 
-    
+    console.log(state.get().projectId)
     
     return (
         <View style={styles.Main}>

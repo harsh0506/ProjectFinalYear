@@ -15,11 +15,23 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import UploadImg from '../Project/ProjectPages/Files';
 import ProjetNavigation from '../Navigation/ProjetNavigation';
 import axios from 'axios';
+import PersonalProjRenderer from './PersonalProjRenderer';
 const auth = getAuth(app)
 
 
 const Home = ({ navigation }) => {
-  const [users, setUser] = React.useState({ userName: "", userEmail: "", userId: "" })
+  const [users, setUser] = React.useState({
+    userEmail: "",
+    userId: "",
+    userName: "",
+    profilepic: "",
+    githubUrl: "",
+    projects: [],
+    Teams: [],
+    id: ""
+  })
+
+  const[userProjects , setUserProjects] = React.useState([])
 
   React.useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -28,14 +40,36 @@ const Home = ({ navigation }) => {
       if (user === null) {
         navigation.navigate("Login")
       } else {
-         setUser({ userEmail: user.email, userName: user.displayName, userId: user.uid })
-         console.log(axios.get(`http://localhost:4000/user/${user.uid}`))
+        setUser({ userEmail: user.email, userName: user.displayName, userId: user.uid })
+        try {
+          axios.get(`http://localhost:4000/user/userName/${user.email}`)
+            .then(user => {
+              setUser({
+                Teams: [],
+                githubUrl: user.data.githubUrl,
+                profilepic: user.data.profilepic,
+                projects: [],
+                userEmail: user.data.userEmail,
+                userId: user.data.userId,
+                userName: user.data.userName,
+                _id: user.data._id,
+              });
+              console.log(user.data.userEmail)
+            })
+            .catch(err => { console.log(err) })
+
+          axios.get(`http://localhost:4000/projects/ti/${user.uid}`)
+            .then(user => { console.log(user);setUserProjects(user.data) })
+            .catch(err => { console.log(err) })
+
+        }
+        catch (err) { }
       }
     })
-  },[1])
+  }, [1])
 
 
-
+  console.log(users)
   const userCredential = useState(usernameState);
   userCredential.set(users)
 
@@ -52,8 +86,8 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.Main}>
       <Text>welcome {users.userName}</Text>
-      <UploadImg />
-      <Button onPress={() => navigation.navigate("Createproj1" , users.userId)} title="CreateProj" />
+      <Button onPress={() => navigation.navigate("Createproj1", users.userId)} title="CreateProj" />
+      <PersonalProjRenderer data={userProjects} nav={navigation}/>
       <Button onPress={Handle_SignOut} title="log out" />
     </View>
   )

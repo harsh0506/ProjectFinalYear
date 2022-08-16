@@ -11,6 +11,19 @@ export const usernameState = createState({
     projects:[],
     Teams:[]
 });
+
+export const projectState = createState({
+    userId:'',
+    teamId:"",
+    projectId:"",
+    teamAdminId:"",
+    documents:[],
+    projectName:"",
+    submissionDate:"",
+    taskList:[],
+    calender:[],
+    activit:""
+})
 //global state to store tasklist of user
 export const taskListState = createState([])
 //global state to store user data after login

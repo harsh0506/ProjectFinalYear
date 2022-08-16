@@ -9,18 +9,18 @@ import Todo from '../Project/ProjectPages/Todo';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const ProjetNavigation = () => {
+const ProjetNavigation = ({projDetail}) => {
     return (
         <Tab.Navigator
             initialRouteName="OverView"
             activeColor="white"
             inactiveColor="white"
             barStyle={{ backgroundColor: 'white' }} >
-            <Tab.Screen name="OverView" component={OverView} />
-            <Tab.Screen name="Activity" component={Activity} />
-            <Tab.Screen name="Calender" component={Calender} />
-            <Tab.Screen name="Files" component={UploadImg} />
-            <Tab.Screen name="Todo" component={Todo} />
+            <Tab.Screen name="OverView" component={OverView} initialParams={{projDetail}}/>
+            <Tab.Screen name="Activity" component={Activity} initialParams={{projDetail}}/>
+            <Tab.Screen name="Calender" component={Calender} initialParams={{projDetail}}/>
+            <Tab.Screen name="Files" component={UploadImg} initialParams={{projDetail}}/>
+            <Tab.Screen name="Todo" component={Todo} initialParams={{projDetail}}/>
         </Tab.Navigator>
     )
 }

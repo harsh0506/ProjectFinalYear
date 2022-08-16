@@ -13,6 +13,7 @@ import { getTask } from '../firebase/Crud';
 import { checkauth } from '../firebase/Auth';
 import Createproj1 from '../Project/Createproj1';
 import Project from '../Project/Project';
+import PersonalProjRenderer from '../Home/PersonalProjRenderer';
 
 
 const auth = getAuth(app)
