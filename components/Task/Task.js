@@ -8,9 +8,10 @@ import { projectState } from '../GlobalState/Globalstate'
 const Task = ({projDetail}) => {
   const proj = useState(projectState)
   console.log(proj.get())
+  console.log(projDetail)
   return (
     <View>
-      <TaskList/>
+      <TaskList tasks={proj.get()}/>
       <AddTask />
     </View>
   )

@@ -1,46 +1,61 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native'
 import React from 'react'
 import { createState, useState } from '@hookstate/core';
 import { projectState, taskListState } from '../GlobalState/Globalstate';
 import { height, width } from '../Dimentions/Dimensions';
 import { deleteDocs } from '../firebase/Crud';
-const TaskList = () => {
+const TaskLists = ({ tasks }) => {
     const state = useState(projectState)
-    const [data, setData] = React.useState([])
-    let res  = state.get() 
-    console.log(state.get().projectId)
-    
+    // const [data, setData] = React.useState([])
+    let res = state.get()
+    console.log(state.get())
+    console.log(res)
+    const taskks = new Array(tasks.TaskList)
+    console.log(taskks.length)
+    let data = []
+    taskks.forEach(element => {
+        data.push(element)
+
+    });
+    console.log(data[0][0].taskName)
+    if (tasks.TaskList === 0) {
+        return (
+            <View>
+                <Text>no task ,addtask</Text>
+            </View>
+        )
+    }
     return (
         <View style={styles.Main}>
             <Text>jnjdnenke</Text>
-            <FlatList
-                contentContainerStyle={{ width: width, height: height/2 }}
-                keyExtractor={(index, item) => item.id}
-                renderItem={({ item }) => (
-                    <Task
-                        task={item.task}
-                        del = {()=>deleteDocs(item.id ,"Task")}
-                    />
-                )}
-                data={res}
-            />
+            <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                    contentContainerStyle={{ width: width, height: height / 2 }}
+                    data={data[0]}
+                    keyExtractor={(item,index) => index}
+                    renderItem={({ item, index }) => {
+                        console.log(item.taskName)
+                        return(<Task item={item}/>)
+                    }}
+                />
+            </SafeAreaView>
         </View>
     )
 }
 
-export default TaskList
+export default TaskLists
 
-const Task = ({ task , del }) => {
-    console.log(task)
+const Task = ({ item, del }) => {
+    console.log(item.taskName)
     return (
         <View>
             <View style={{}}>
-                <Text>{task}</Text>
+                <Text>{item.taskName}</Text>
                 <Text>2:hours {"/n"}</Text>
             </View>
-            <View style={{flexDirection:"row"}}>
+            <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity><Text>U</Text></TouchableOpacity>
-                <TouchableOpacity onPress={del}><Text>D</Text></TouchableOpacity>
+                <TouchableOpacity onPress={"del"}><Text>D</Text></TouchableOpacity>
             </View>
         </View>
     )
@@ -48,7 +63,7 @@ const Task = ({ task , del }) => {
 
 const styles = StyleSheet.create({
     Main: {
-      alignItems:"center",justifyContent:"center",
+        alignItems: "center", justifyContent: "center",
     }
 })
 

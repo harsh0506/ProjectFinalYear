@@ -2,12 +2,12 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Task from '../../Task/Task'
 
-const Todo = ({projDetail}) => {
+const Todo = ({ projDetail }) => {
   console.log(projDetail)
   return (
     <View>
-      <Text style={{color:"black"}}>
-<Task projDetail={projDetail}/>
+      <Text style={{ color: "black" }}>
+        <Task projDetail={projDetail} />
 
       </Text>
     </View>

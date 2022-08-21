@@ -1,9 +1,12 @@
 import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { height, width } from '../Dimentions/Dimensions'
+import { useState } from '@hookstate/core'
+import { projectState } from '../GlobalState/Globalstate'
 
 const PersonalProjRenderer = ({ data, nav }) => {
     console.log(data)
+    const ProjectState = useState(projectState)
     if (data.length === 0) {
         return (
             <View>
@@ -20,7 +23,10 @@ const PersonalProjRenderer = ({ data, nav }) => {
                 keyExtractor={(item) => item.projectId}
                 renderItem={({ item, index }) => (
                     <ListRenderer
-                        onPress={() => nav.navigate("Project", item)}
+                        onPress={() => {
+                            nav.navigate("Project", item)
+                            ProjectState.set(item)
+                        }}
                         res={item.projectName} />
                 )}
             />

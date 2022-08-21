@@ -17,10 +17,10 @@ export const projectState = createState({
     teamId:"",
     projectId:"",
     teamAdminId:"",
-    documents:[],
+    Documents:[],
     projectName:"",
     submissionDate:"",
-    taskList:[],
+    TaskList:[],
     calender:[],
     activit:""
 })

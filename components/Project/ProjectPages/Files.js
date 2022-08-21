@@ -1,12 +1,16 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import * as DocumentPicker from "expo-document-picker";
 
 import { uploadBytes, ref, listAll, getDownloadURL, getStorage } from 'firebase/storage';
 import { app, storage } from '../../firebase/FirebaseConfig';
-import { ListItems, UploadDocs } from '../../Helper';
+import { downloadData, ListItems, UploadDocs } from '../../Helper';
+import { useState } from '@hookstate/core';
+import { projectState } from '../../GlobalState/Globalstate';
 
-const UploadImg = () => {
+const UploadImg = ({ projDetail }) => {
+    const ProjectState = useState(projectState)
+    console.log(ProjectState.get().Documents)
     let projId = "oel7p"
     const [fileInfo, setFileInfo] = React.useState({
         fileType: "",
@@ -19,39 +23,49 @@ const UploadImg = () => {
         console.log(m)
     }, [])
     let adderId = "HB9NyODKMPYImstDR0pcROImoFa2"
-    
-
-    const downloadurl = () => {
-        const xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = (event) => {
-            const blob = xhr.response;
-        };
-        xhr.open('GET', downloadData[1].url_of_file);
-        xhr.send();
-    }
 
     return (
         <View>
-            <TouchableOpacity onPress={()=>{UploadDocs(projId , adderId)}}
+            <TouchableOpacity onPress={() => { UploadDocs(projId, adderId) }}
                 style={{ backgroundColor: "blue" }}
             >
                 <Text>index</Text>
 
             </TouchableOpacity>
-            
+
+            <ListOfDocs data={ProjectState.get().Documents} />
         </View>
     )
 }
 
 export default UploadImg
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    alignItems: "center", justifyContent: "center",
+})
 
-const ListOfDocs = ()=>{
-    return(
-        <View>
-            <FlatList/>
+
+export const ListOfDocs = ({ data }) => {
+    console.log(data)
+    return (
+        <View style={styles.Main}>
+            <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                    keyExtractor={(item) => item._id}
+                    data={data}
+                    renderItem={({ item, index }) => (
+                        <View >
+                            <Text>{item.docName}</Text>
+                            <Text>{item.url}</Text>
+                            <TouchableOpacity onPress={() => { downloadData(item.url , item.docName) }}>
+                                <Text>download</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    )}
+                />
+            </SafeAreaView>
+
         </View>
     )
 }

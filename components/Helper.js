@@ -26,14 +26,45 @@ export async function UploadDocs(projectId = "zojwqt", adderId = "HB9NyODKMPYIms
                 data = {
                     url,
                     docName: String(snapshot.metadata.name),
-                    adderId:String(adderId),
+                    adderId: String(adderId),
                     date: String(snapshot.metadata.timeCreated),
                 }
-                 addDataToProjects(data)
+                addDataToProjects(data)
 
             })
             .catch(err => console.log(err))
     });
+}
+export const downloadData = (url,name) => {
+    axios({
+        url: url,
+        method: 'GET',
+        responseType: 'blob'
+    })
+        .then((response) => {
+            const url = window.URL
+                .createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', name);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+}
+export const downloadurl = (url) => {
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+            const blob = xhr.response;
+        };
+        xhr.open('GET', url);
+        xhr.send();
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 export async function addDataToProjects(data) {
