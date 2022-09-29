@@ -4,18 +4,22 @@ import { SigninMethod } from '../firebase/Auth'
 import { set } from '../firebase/Crud'
 import { height, width } from '../Dimentions/Dimensions'
 import axios from "axios"
+import { useState } from '@hookstate/core'
+import { usernameState } from '../GlobalState/Globalstate'
 
 const Signin = ({navigation}) => {
     const [userName, setUsername] = React.useState("")
     const [email, setEmail] = React.useState("")
     const [passWord, setPass] = React.useState("")
+    const userState = useState(usernameState)
     const getSignin = async () => {
         try {
             const res = await SigninMethod(email, passWord)
             res.userName = userName
            const data =  await axios.post("http://localhost:4000/user" , res)
-            console.log(res)
+            console.log(data)
             navigation.push("Home")
+            userState.set(data)
            // set({userName,passWord , res })
         } catch (error) { console.log(error) }
     }

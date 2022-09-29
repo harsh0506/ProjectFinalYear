@@ -9,7 +9,8 @@ export const usernameState = createState({
     profilepic:"",
     githubUrl:"",
     projects:[],
-    Teams:[]
+    Teams:[],
+    _id:""
 });
 
 export const projectState = createState({
@@ -24,6 +25,10 @@ export const projectState = createState({
     calender:[],
     activit:""
 })
+
+export const userProjects = createState([
+    
+])
 //global state to store tasklist of user
 export const taskListState = createState([])
 //global state to store user data after login

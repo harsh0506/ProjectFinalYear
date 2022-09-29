@@ -6,11 +6,12 @@ import { projectState } from '../GlobalState/Globalstate'
 
 const PersonalProjRenderer = ({ data, nav }) => {
     console.log(data)
+
     const ProjectState = useState(projectState)
     if (data.length === 0) {
         return (
             <View>
-
+                <Text>no projedcts added</Text>
             </View>
         )
     }
