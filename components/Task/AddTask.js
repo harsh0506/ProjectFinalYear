@@ -6,6 +6,8 @@ import { set } from "../firebase/Crud"
 import axios from 'axios';
 const AddTask = () => {
     const state = useState(projectState)
+    const userState = useState(usernameState)
+    console.log(userState.get())
     const [taskName, setTaskName] = React.useState("")
     const [progress, setProgress] = React.useState("0%")
     const [submissionDate, setSubmissionDate] = React.useState("15-09-22")
@@ -14,7 +16,7 @@ const AddTask = () => {
     const data = {
         "TaskList": {
             taskName,
-            userId:"hdknficw38t4ubifr20#7din ",
+            userId:"hdknficw38t4ubifr20#7din",
             progress, submissionDate,
             dateOfCreation: Date.now(),
             taskId
@@ -24,6 +26,7 @@ const AddTask = () => {
         try {
             const res = await axios.put(`http://localhost:4000/projects/arrAdd/${res1}`,data)
             console.log(res)
+            state.set(res);
         } catch (error) { console.log(error) }
     }
     return (

@@ -8,7 +8,7 @@ const Project = ({ route }) => {
   console.log(route.params.projectName)
   return (
     <View style={styles.Main}>
-      <Text>Project {route.params.projectName}</Text>
+      <Text>Project name is : {route.params.projectName}</Text>
       <ProjetNavigation projDetail={route.params} />
     </View>
   )

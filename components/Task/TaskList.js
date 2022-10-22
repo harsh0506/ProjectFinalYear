@@ -4,6 +4,7 @@ import { createState, useState } from '@hookstate/core';
 import { projectState, taskListState } from '../GlobalState/Globalstate';
 import { height, width } from '../Dimentions/Dimensions';
 import { deleteDocs } from '../firebase/Crud';
+import axios from 'axios';
 const TaskLists = ({ tasks }) => {
     const state = useState(projectState)
     // const [data, setData] = React.useState([])
@@ -17,7 +18,7 @@ const TaskLists = ({ tasks }) => {
         data.push(element)
 
     });
-    console.log(data[0][0].taskName)
+   // console.log(data[0][0].taskName)
     if (tasks.TaskList === 0) {
         return (
             <View>
@@ -45,8 +46,11 @@ const TaskLists = ({ tasks }) => {
 
 export default TaskLists
 
-const Task = ({ item, del }) => {
+const Task = ({ item }) => {
     console.log(item.taskName)
+    const del = async()=>{
+       await axios.put(`http://localhost:4000/projects/projDelete/${item._id}`,{"Parentkey":"TaskList"})
+    }
     return (
         <View>
             <View style={{}}>
@@ -54,8 +58,9 @@ const Task = ({ item, del }) => {
                 <Text>2:hours {"/n"}</Text>
             </View>
             <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity><Text>U</Text></TouchableOpacity>
-                <TouchableOpacity onPress={"del"}><Text>D</Text></TouchableOpacity>
+                <TouchableOpacity><Text>Update  </Text></TouchableOpacity>
+                <br />
+                <TouchableOpacity onPress={del}><Text>Delete</Text></TouchableOpacity>
             </View>
         </View>
     )

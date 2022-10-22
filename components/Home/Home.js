@@ -36,55 +36,50 @@ const Home = ({ navigation }) => {
   const [userProjects, setUserProjects] = React.useState([])
 
   React.useEffect(async () => {
-    
-    onAuthStateChanged(auth, async(user) => {
+    //auth state is checked and if user is absent ,it is navigates on login page and if the user is present, the home page is shown 
+    onAuthStateChanged(auth, async (user) => {
       if (user === null || user === undefined || user === "" || user === []) {
-        navigation.navigate("Login")
-      } else {
+        await navigation.navigate("Login");
+      }
+      else {
+        //the auth object returns email ,display name and uid which is stored inside user state 
         setUser({ userEmail: user.email, userName: user.displayName, userId: user.uid })
-        console.log(user.uid)
-        const as = user.email
-        const m = await userInfo(as)
-        console.log(m)
+
         try {
+          //this api call returns the user data,and that data is being stored inside user state
           axios.get(`http://localhost:4000/user/userName/${user.email}`)
-            .then(user => {
-              console.log(user.data)
-              setUser(user.data[0]);
-              console.log(user.data[0]._id)
-            })
+            .then(user => { setUser(user.data[0]) })
             .catch(err => { console.log(err) })
 
+          // this api call returns the project which are created by the curent logged in user ,the cureent logged in user's teamadminid is used to get the project, and saved in
+          //UserProjects state 
           axios.get(`http://localhost:4000/projects/ti/${user.uid}`)
-            .then(user => { console.log(user); setUserProjects(user.data) })
+            .then(user => { setUserProjects(user.data) })
             .catch(err => { console.log(err) })
 
         }
-        catch (err) { }
+        catch (err) { console.log(err) }
       }
     })
   }, [1])
 
-
-  console.log(users.userEmail)
+  //this code will set the userData stored in state user into globalstate usernameState
   userCredential.set(users)
 
+  //function tohandle signout,after signout the user is sent to login page
   const Handle_SignOut = async () => {
     try {
       await SignOutMethod()
       navigation.push("Login")
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) { console.log(error)  }
   }
 
-  console.log(userCredential.get()._id)
-
+  //this is other method which return user info and it's projects togther ,but haven't saved anywhere
   if (userCredential.get()._id !== undefined) {
     try {
       const id = String(userCredential.get()._id)
       const teamAdminId = String(userCredential.get().userId)
-      axios.get(`http://localhost:4000/user/hhdd/${id}` , { params: { teamAdminId } })
+      axios.get(`http://localhost:4000/user/hhdd/${id}`, { params: { teamAdminId } })
         .then(user => {
           console.log(user.data)
 
