@@ -1,0 +1,35 @@
+{
+  "name": "proj_final",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@aldabil/react-scheduler": "^2.5.14",
+    "@chakra-ui/react": "^2.4.6",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@hookstate/core": "^4.0.0-rc21",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.0",
+    "@mui/x-date-pickers": "^5.0.10",
+    "antd": "^5.1.2",
+    "axios": "^1.2.1",
+    "bootstrap": "^5.2.3",
+    "firebase": "^9.15.0",
+    "framer-motion": "^6.5.1",
+    "js-file-download": "^0.4.12",
+    "mdb-ui-kit": "^6.0.1",
+    "moment": "^2.29.4",
+    "next": "13.0.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-draggable": "^4.4.5",
+    "react-file-preview-latest": "^1.0.3",
+    "rsuite": "^5.23.2"
+  }
+}
