@@ -17,7 +17,7 @@ import { projectState, usernameState } from '../../Helper/globeState'
 import { document, UserProj } from '../../Helper/globeState/InitialStae'
 import { ExpandAltOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Avatar, Card, Button, Modal, Input } from 'antd';
-import PDFViewer from 'pdf-viewer-reactjs'
+
 
 const { Meta } = Card;
 
@@ -77,19 +77,11 @@ function Files() {
       setIsModalOpen(true)
       let dataType = docName.split(".")[1]
       if (dataType === "png" || dataType === "jpeg" || dataType === "jpg" || dataType === "gif" || dataType === "tiff" || dataType === "pdf") {
-       // setFileType(<img src={url} style={{ width: 300 }} />)
-       <PDFViewer
-          document={{
-            url:"chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/http://www.cs.ucf.edu/courses/cap6412/fall2009/papers/InDefenceOfNN_CVPR08.pdf"
-          }}
-        />
+        setFileType(<img src={url} style={{ width: 300 }} />)
+       
       }
       if (dataType === "pdf") {
-        setFileType(<PDFViewer
-          document={{
-            url:"chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/http://www.cs.ucf.edu/courses/cap6412/fall2009/papers/InDefenceOfNN_CVPR08.pdf"
-          }}
-        />)
+        
       }
     } catch (error) {
 

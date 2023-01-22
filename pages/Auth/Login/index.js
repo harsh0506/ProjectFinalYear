@@ -3,7 +3,7 @@ import React  from 'react'
 import TextField from '@mui/material/TextField';
 import { LoginMethod } from '../Helper';
 import { useRouter } from 'next/router';
-import { fireBaseLoginReturns } from '../../globeState';
+import { fireBaseLoginReturns } from "../../Helper/globeState";
 import { useHookstate } from '@hookstate/core';
 
 

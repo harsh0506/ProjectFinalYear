@@ -21,6 +21,8 @@ import Logout from '@mui/icons-material/Logout';
 import { SignOutMethod } from '../Auth/Helper';
 import { useRouter } from 'next/router';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DisplayProjectList from './DsiplayProjectList';
 
 const drawerWidth = 240;
 
@@ -156,9 +158,12 @@ export default function MiniDrawer() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Mini variant drawer
-
+                        Project Collaboration Platform 
                     </Typography>
+
+                    <IconButton onClick={()=>router.push("/Profile")}>
+                        <AccountCircleIcon />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
@@ -262,6 +267,15 @@ export default function MiniDrawer() {
                 <Divider />
 
             </Drawer>
+
+
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        <Row class="d-flex align-items-center justify-content-center">
+          <DisplayProjectList />
+        </Row>
+      </Box>
+
         </Box>
     );
 }

@@ -47,7 +47,7 @@ export const UserProj = {
     teamAdminId:"",
     Documents:[document],
     projectName:"",
-    submissionDate:"",
+    SubmissionDate:"",
     TaskList:[Task],
     calender:[],
     activit:"",
@@ -56,4 +56,16 @@ export const UserProj = {
     startDate:"",
     dateOfCreation:"",
     _id:""
+}
+
+export const Proj = {
+    userId:'',
+    teamId:"",
+    projectId:"",
+    teamAdminId:"",
+    projectName:"",
+    SubmissionDate:"",
+    personal:true,
+    dateOfCreation:"",
+    priority:"",
 }

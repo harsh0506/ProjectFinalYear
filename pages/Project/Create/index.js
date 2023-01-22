@@ -28,7 +28,7 @@ function Todolist() {
 
     <>
     <div className="container" >
-    <Button onClick={handleOpen}>Open</Button>
+    <Button onClick={handleOpen}>Create Project</Button>
       <ModalTodo
         open={open}
         onClose={handleClose}
