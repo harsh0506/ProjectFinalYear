@@ -33,7 +33,10 @@ function Files() {
   //state to store data of the current project , and set function to set the project
   const [Project, setProject] = React.useState(UserProj)
 
+  
+
   React.useEffect(() => {
+    console.log(router.query)
     if (userDetails.get()._id.length === 0) { router.push("/") }
     else {
       setProject(Proj.get()[0])

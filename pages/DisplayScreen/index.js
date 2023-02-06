@@ -197,7 +197,7 @@ export default function MiniDrawer() {
                         </ListItemButton>
                     </ListItem>
 
-                    <ListItem key={"add Team"} disablePadding sx={{ display: 'block' }}>
+                    <ListItem key={" Team"} disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
                         onClick={goToTeams}
                             sx={{
@@ -215,7 +215,7 @@ export default function MiniDrawer() {
                             >
                                 <AddBoxIcon />
                             </ListItemIcon>
-                            <ListItemText primary={"add Team"} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={" Team"} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 

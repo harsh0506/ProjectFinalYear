@@ -121,10 +121,14 @@ export default function MiniDrawer() {
   const [state, dispatch] = React.useReducer(reducer, initialState)
   const router = useRouter()
   const ProjState = useHookstate(projectState)
-  console.log(router.query.id)
-  getData(router.query.id).then(res => ProjState.set(res)).catch ((err)=>{console.log(err)})
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  React.useCallback(()=>getData(),[])
+
+  React.useEffect(()=>{
+    getData(router.query.id).then(res => ProjState.set(res)).catch ((err)=>{console.log(err)})
+  },[getData])
+  
 
   const handleDrawerOpen = () => {
     setOpen(true);
