@@ -6,6 +6,7 @@ import { Panel, Placeholder, Row, Col } from 'rsuite';
 import axios from 'axios';
 import { userDetailsIS, UserTeams } from '../../Helper/globeState/InitialStae';
 import { Button, Modal, Input } from 'antd';
+import ProjCreate from "../../Project/Create"
 
 function Team() {
   const router = useRouter()
@@ -31,9 +32,11 @@ function Team() {
 
       <AddTeam userId={user._id} />
 
+     
+
       <Row class=" align-items-center justify-content-center">
         {
-          userteams.map((item) => {
+          userteams[0].teamName ==="" ? <>No Teams </> : userteams.map((item) => {
             return (
               <>
                 <Col md={10} sm={12}>

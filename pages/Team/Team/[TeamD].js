@@ -1,13 +1,16 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import React from 'react'
+import ProjCreate from "../../Project/Create"
 import { CurTeam, projectState, userProjects } from '../../Helper/globeState'
-import { Avatar, Card } from 'antd';
+import { Avatar, Card, Modal } from 'antd';
 import { Panel, Placeholder, Row, Col, Divider } from 'rsuite';
 import { useHookstate } from '@hookstate/core';
-import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, CheckCircleOutlined } from '@ant-design/icons';
 import { UserProj, UserTeams, userDetailsIS } from '../../Helper/globeState/InitialStae'
+import { TextField } from '@mui/material'
 const { Meta } = Card;
+
 
 function TeamDetail({ }) {
   //routers object
@@ -49,25 +52,29 @@ function TeamDetail({ }) {
   }, [getUserTeams])
 
   //navigate to project page
-  async function handleNavigation(id , data) {
+  async function handleNavigation(id, data) {
     try {
-        Project.set(data)
-        await router.push({
-            pathname: `/Project/${id}`,
-            query: { id }
-        })
+      Project.set(data)
+      await router.push({
+        pathname: `/Project/${id}`,
+        query: { id }
+      })
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-}
+  }
 
   return (
     <div className='container my-4'>
       <p style={{ fontSize: 40 }}>{state.teamName}</p>
       <Divider orientation="left" style={{ width: 100 }}>Team Members</Divider>
+      {
+        users.length < 3 ? <AddMemBer teamid={state.teamid} usersLen={users.length} /> : <p>can not add members</p>
+      }
+
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
-          users.map((ele) => (
+          users[0].userEmail === "" ? <>No users</> : users.map((ele) => (
             <>
               <div className="col" onClick={() => alert(ele._id)}>
                 <Card
@@ -93,11 +100,19 @@ function TeamDetail({ }) {
       </div>
 
       <Divider orientation="left" style={{ width: 100 }}>Team Projects</Divider>
+      {
+        projects.length < 3 ? <button>
+          <ProjCreate Teamid={state._id} />
+        </button>
+          : <p>can not add projects</p>
+      }
+
+
 
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
 
-          projects.length === 0 ? <p>no projects</p> : projects.map((item) => {
+          projects[0].projectName === "" ? <>No Projects</> : projects.length === 0 ? <p>no projects</p> : projects.map((item) => {
             return (
               <>
                 <div className="col" onClick={() => alert(item._id)}>
@@ -106,8 +121,9 @@ function TeamDetail({ }) {
                       width: 300,
                     }}
                     actions={[
-                      <EditOutlined key="edit" onClick={()=>handleNavigation(item._id , item)}/>,
-                      <DeleteOutlined key="setting" />,
+                      <EditOutlined key="edit" onClick={() => handleNavigation(item._id, item)} />,
+                      <DeleteOutlined key="setting" onClick={() => delProj(item._id)} />,
+                      <CheckCircleOutlined onClick={() => updateProj(item._id)} />
                     ]}
                   >
                     <Meta
@@ -145,6 +161,14 @@ function TeamDetail({ }) {
                       </div>
                     </div>
 
+                    {/* conatiner 3 */}
+                    <div className="d-flex p-1 m-1 container">
+                      <div className="row">
+                        <span>status</span>
+                        <p>{item.status}</p>
+                      </div>
+                    </div>
+
                   </Card>
                 </div>
               </>)
@@ -162,6 +186,7 @@ export default TeamDetail
 export async function getUserTeams(id) {
   try {
     const data = await (await axios.get(`http://localhost:4000/teams/${id}`)).data
+    console.log(data)
     return [data.teamMember, data.teamdata, data.Projects]
   } catch (error) {
     console.log(error)
@@ -184,4 +209,52 @@ async function DelFromArray(teamsId, data) {
   } catch (error) {
 
   }
+}
+
+async function delProj(projId) {
+  try {
+    const res = await axios.delete(`http://localhost:4000/projects/${projId}`)
+    alert("project removed")
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function updateProj(projId) {
+  try {
+    const res = await axios.put(`http://localhost:4000/projects/${projId}`, { "status": "completed" })
+    alert("project status changed")
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export function AddMemBer({ teamid }) {
+  //stores user's _id
+  const [state, setState] = React.useState("")
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = async () => {
+    setIsModalOpen(false);
+    const obj = { "teamMembers": state }
+    try {
+      console.log(await axios.put(`http://localhost:4000/teams/teamMembers/${teamid}`, obj))
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  return (
+    <>
+      <button onClick={showModal}>add member</button>
+      <Modal title="add user" open={isModalOpen} onCancel={handleCancel}>
+        <TextField id="outlined-basic" onChange={(e) => setState(e.target.value)} name="user Id" placeholder='Add user Id ' label="add user Id" variant="outlined" />
+        <button onClick={handleOk}>add member</button>
+      </Modal>
+    </>
+  )
 }

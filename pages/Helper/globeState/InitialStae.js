@@ -43,6 +43,7 @@ export const document = {
 export const UserProj = {
     userId:'',
     teamId:"",
+    status: "",
     projectId:"",
     teamAdminId:"",
     Documents:[document],
@@ -53,7 +54,6 @@ export const UserProj = {
     activit:"",
     priority:"",
     personal:true,
-    startDate:"",
     dateOfCreation:"",
     _id:""
 }
@@ -65,7 +65,7 @@ export const Proj = {
     teamAdminId:"",
     projectName:"",
     SubmissionDate:"",
-    personal:true,
+    personal:false,
     dateOfCreation:"",
     priority:"",
 }

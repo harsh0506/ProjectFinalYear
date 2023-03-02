@@ -3,6 +3,8 @@ import { Modal, Cascader, ButtonToolbar, Button, Loader, Placeholder, DatePicker
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import ModalTodo from './Modal'
+import axios from 'axios';
+import { UserTeams } from '../../Helper/globeState/InitialStae';
 
 
 const data = [{ value: "harsh", label: "harsh" },
@@ -14,28 +16,35 @@ const Prioity = [{ value: "high", label: "high" },
 { value: "low", label: "low" },
 ]
 
-function Todolist() {
-  const [open, setOpen] = React.useState(false);
-  const [rows, setRows] = React.useState(0);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleEntered = () => {
-    setTimeout(() => setRows(80), 2000);
+function Todolist({Teamid}) {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [teamid , setTeam] = React.useState("")
+  React.useEffect(()=>{
+    setTeam(Teamid)
+  },[])
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   return (
 
     <>
     <div className="container" >
-    <Button onClick={handleOpen}>Create Project</Button>
+    <Button onClick={showModal}>Create Project</Button>
       <ModalTodo
-        open={open}
-        onClose={handleClose}
-        onEntered={handleEntered}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        handleCancel={handleCancel}
+        handleOk={handleOk}
         data={data}
         Prioity={Prioity}
-        
+        teamid={teamid}
       />
     </div>
         
@@ -45,3 +54,12 @@ function Todolist() {
 }
 
 export default Todolist
+
+export async function getUser  (info){
+try {
+  //const d = await (await axios.get("http://localhost:3000/user/users",info)).data
+  console.log(info)
+} catch (error) {
+  
+}
+}
