@@ -1,23 +1,27 @@
 //in this file we work with f=global state and their setting state function
 //imports for creating global state object
 import { hookstate } from '@hookstate/core';
-import { UserTeams , UserProj , Task } from './InitialStae';
+import { UserTeams, UserProj, Task } from './InitialStae';
 //state of user 
 export const fireBaseLoginReturns = hookstate({
-    userId:"",
-    userEmail:""
+    userId: "",
+    userEmail: ""
 })
 //global state to set usermail and id
 export const usernameState = hookstate({
-    userEmail:"",
-    userId:"",
-    userName:"",
-    profilepic:"",
-    githubUrl:"",
-    projects:[],
-    Teams:[],
-    _id:""
+    userEmail: "",
+    userId: "",
+    userName: "",
+    profilepic: "",
+    githubUrl: "",
+    projects: [],
+    Teams: [],
+    _id: ""
 });
+
+export const TeamMembers = hookstate([{
+    label: "", value: ""
+}])
 
 export const projectState = hookstate(UserProj)
 

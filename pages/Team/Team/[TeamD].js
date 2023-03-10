@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import React from 'react'
 import ProjCreate from "../../Project/Create"
-import { CurTeam, projectState, userProjects } from '../../Helper/globeState'
+import { CurTeam, projectState, TeamMembers, userProjects } from '../../Helper/globeState'
 import { Avatar, Card, Modal } from 'antd';
 import { Panel, Placeholder, Row, Col, Divider } from 'rsuite';
 import { useHookstate } from '@hookstate/core';
@@ -24,14 +24,13 @@ function TeamDetail({ }) {
   //global state of the user
   const Project = useHookstate(projectState)
 
+  const Team_Members = useHookstate(TeamMembers)
+
   //local state to save the teams data
   const [state, setState] = React.useState(UserTeams)
   const [users, setUsers] = React.useState([userDetailsIS])
   const [projects, setProjects] = React.useState([UserProj])
   const [PriorityIconColor, setPriorityIconColor] = React.useState("red")
-
-  //use callback function
-  React.useCallback(() => getUserTeams(), [])
 
   //use effect to run at start of rendering
   React.useEffect(() => {
@@ -40,11 +39,16 @@ function TeamDetail({ }) {
 
     //setting set of global state
     setState(Team.get())
-
+    let tm = []
     //get all data aboutthe team
     getUserTeams(router.query.id).then((res) => {
       setUsers(res[0])
+      tm = res[0].reduce((acc, { _id, userName }) => {
+        acc.push({ value: _id, label: userName });
+        return acc;
+      }, []);
       setProjects(res[2])
+      Team_Members.set(tm)
     })
       .catch((err) => {
         console.log(err)
@@ -112,7 +116,7 @@ function TeamDetail({ }) {
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
 
-          projects[0].projectName === "" ? <>No Projects</> : projects.length === 0 ? <p>no projects</p> : projects.map((item) => {
+            projects.map((item) => {
             return (
               <>
                 <div className="col" onClick={() => alert(item._id)}>
