@@ -23,6 +23,8 @@ import { useRouter } from 'next/router';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DisplayProjectList from './DsiplayProjectList';
+import { EditOutlined, UserOutlined,UsergroupDeleteOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, InfoCircleOutlined } from '@ant-design/icons';
+
 
 const drawerWidth = 240;
 
@@ -101,7 +103,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-export default function MiniDrawer() {
+export default function MiniDrawer( {user}) {
     const theme = useTheme();
     const router = useRouter()
     const [open, setOpen] = React.useState(false);
@@ -119,7 +121,7 @@ export default function MiniDrawer() {
         }
     }
 
-    const goToTeams = async()=>{
+    const goToTeams = async () => {
         try {
             router.push("/Team/Team")
         } catch (error) {
@@ -127,7 +129,7 @@ export default function MiniDrawer() {
         }
     }
 
-    const goToProjCreation = async(path)=>{
+    const goToProjCreation = async (path) => {
         try {
             router.push(path)
         } catch (error) {
@@ -143,7 +145,9 @@ export default function MiniDrawer() {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
-                <Toolbar>
+                <Toolbar style={{
+                    background: "#120609"
+                }}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -158,22 +162,24 @@ export default function MiniDrawer() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Project Collaboration Platform 
+                        Project Collaboration Platform
                     </Typography>
 
-                    <IconButton onClick={()=>router.push("/Profile")}>
+                    <IconButton onClick={() => router.push("/Profile")}>
                         <AccountCircleIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            <Drawer variant="permanent" open={open} style={{ background: ""}}>
+                <DrawerHeader style={{ background: "#120609"}} >
+                    <IconButton onClick={handleDrawerClose} style={{background:"white"}} >
+                        {theme.direction === 'rtl' ? <ChevronRightIcon style={{background:'white'}}/> : <ChevronLeftIcon style={{background:'white'}} />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
+                <List style={{
+                     background: "#120609"
+                }}>
 
                     <ListItem key={"log out"} disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
@@ -191,15 +197,15 @@ export default function MiniDrawer() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <Logout />
-                            </ListItemIcon>
-                            <ListItemText primary={"logout"} sx={{ opacity: open ? 1 : 0 }} />
+                                <Logout style={{background:"white"}} />
+                            </ListItemIcon >
+                            <ListItemText primary={"logout"} style={{color:"white" , fontSize:17}} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 
                     <ListItem key={" Team"} disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
-                        onClick={goToTeams}
+                            onClick={goToTeams}
                             sx={{
                                 minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
@@ -213,15 +219,15 @@ export default function MiniDrawer() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <AddBoxIcon />
+                                <UsergroupDeleteOutlined style={{background:"white"}} />
                             </ListItemIcon>
-                            <ListItemText primary={" Team"} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={" Team"} style={{color:"white "}} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 
                     <ListItem key={"Create proj"} disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
-                        onClick={()=>goToProjCreation("/Project/Create")}
+                            onClick={() => goToProjCreation("/Project/Create")}
                             sx={{
                                 minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
@@ -235,15 +241,15 @@ export default function MiniDrawer() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <AddBoxIcon />
+                                <AddBoxIcon style={{background:"white"}}/>
                             </ListItemIcon>
-                            <ListItemText primary={"Create project"} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={"Create project"} style={{color:"white"}} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
-                    
-                    <ListItem key={"Create proj"} disablePadding sx={{ display: 'block' }}>
+
+                    <ListItem key={"Personal Projects"} disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
-                        onClick={()=>goToProjCreation("/Project")}
+                            onClick={() => goToProjCreation("/Project")}
                             sx={{
                                 minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
@@ -257,9 +263,8 @@ export default function MiniDrawer() {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <AddBoxIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={"Create project"} sx={{ opacity: open ? 1 : 0 }} />
+                                <UserOutlined style={{background:"white"}}/>                            </ListItemIcon>
+                            <ListItemText primary={"Personal Projects"} style={{color:"white"}} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 
@@ -270,11 +275,11 @@ export default function MiniDrawer() {
 
 
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <Row class="d-flex align-items-center justify-content-center">
-          <DisplayProjectList />
-        </Row>
-      </Box>
+                <DrawerHeader />
+                <Row class="d-flex align-items-center justify-content-center">
+                    <DisplayProjectList  user={user}/>
+                </Row>
+            </Box>
 
         </Box>
     );

@@ -1,5 +1,5 @@
 import React from 'react'
-import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, InfoCircleOutlined } from '@ant-design/icons';
 import { Avatar, Card, Button, Modal, Input, Divider } from 'antd';
 import { usernameState } from '../../Helper/globeState';
 import { UserProj } from '../../Helper/globeState/InitialStae';
@@ -7,27 +7,91 @@ import { useHookstate } from '@hookstate/core';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import ProjectCreate from "../../Project/Create"
+import { Tooltip } from 'antd';
+
 
 const { Meta } = Card;
 
-function DisplayProjectList() {
+function DisplayProjectList({user}) {
 
     const UserDetails = useHookstate(usernameState)
     const [stae, setState] = React.useState([UserProj])
+    const [TProj, setTeamProj] = React.useState([UserProj])
     const [PriorityIconColor, setPriorityIconColor] = React.useState("red")
     const router = useRouter()
-
-    const get = React.useCallback(()=>getData(),[])
+    const [cardcol, setCardcol] = React.useState("rgb(30 50 114)")
 
     React.useEffect(() => {
         try {
-            console.log(UserDetails.get())
+            console.log(user)
             if (UserDetails.get()._id === "") router.push("/")
-            getData(UserDetails.get()._id).then(res => setState(res)).catch(err => console.log(err))
-            console.log(stae)
+            getData(UserDetails.get()._id).then(res => { setState(res[0]); setTeamProj(res[1]) }).catch(err => console.log(err))
+            console.log(UserDetails.get())
         } catch (err) { console.log(err) }
 
-    }, [getData])
+    }, [TProj])
+
+
+
+    return (
+        <>
+            <div style={{
+                height: "87vh",
+                background: "#3b1b27"
+            }}>
+
+                <div className="container" style={{
+                    textAlign: "left",
+                    display: "flex"
+                }}>
+                    <h2 style={{
+                        color: "#fffffe",
+                        fontWeight: 600,
+                        fontSize: 45
+                    }}>Projects</h2>
+
+                </div>
+
+                <Divider orientation="left" style={{ width: 100, color: "pink", display: "flex", flexDirection: "row" }}>
+                    <p style={{ marginRight: 5 }}>Personal Project
+                        <Tooltip title="You can only make 3 Projects">
+                            <InfoCircleOutlined style={{ marginLeft: 15 }} />
+                        </Tooltip>
+                    </p>
+                </Divider>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {
+                     !Array.isArray(stae)  ? <p>No Projects</p> : stae.map((ele) => {
+                            return (<Cardcomp ele={ele} />)
+                        }) 
+                    }
+                </div>
+
+                <Divider orientation="left" style={{ width: 100, color: "pink", display: "flex", flexDirection: "row" }}>
+                    <p style={{ marginRight: 5 }}>Team Project
+                        <Tooltip title="You can only make 3 Projects">
+                            <InfoCircleOutlined style={{ marginLeft: 15 }} />
+                        </Tooltip>
+                    </p>
+                </Divider>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    { 
+                        !Array.isArray(TProj)  ? <p>No Projects</p> : TProj.map((ele) => {
+                            return (<Cardcomp ele={ele} />)
+                        })
+                    }
+                </div>
+
+            </div>
+        </>
+    )
+}
+
+export default DisplayProjectList
+
+export function Cardcomp({ ele }) {
+    const router = useRouter()
+    const [cardcol, setCardcol] = React.useState("#120609")
 
     async function handleNavigation(id) {
         try {
@@ -40,83 +104,69 @@ function DisplayProjectList() {
         }
     }
 
+    const RD = Math.round((new Date(ele.SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
+
     return (
-        <>
-            <div>
+        <div className="col" style={{
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+        }}>
 
-                <div className="container">
-                    <ProjectCreate />
+            <Card
+                onClick={() => handleNavigation(ele._id)}
+                onMouseOver={() => setCardcol("#230a10")}
+                onMouseOut={() => setCardcol("#120609")}
+
+                style={{
+                    width: 300,
+                    background: cardcol,
+                    border: "none",
+                    borderRadius: "20px"
+                }}
+            >
+                <p style={{
+                    color: "#ffb5d2",
+                    fontSize: 25,
+                    fontWeight: 500,
+                }}>
+                    {ele.projectName}
+                </p>
+
+                {/*container 1*/}
+                <div className="d-flex p-1 m-1 container">
+
+                    <div className="row" style={{
+                        width: 180
+                    }}>
+                        <span style={{
+                            color: "#fffffe",
+                            fontWeight: 300,
+                            fontSize: 20
+                        }}>remaining Days</span>
+                        <p style={{
+                            color: RD < 10 ? "red" : "green",
+                            fontSize: 22,
+                            fontWeight: 400
+                        }}>{RD}</p>
+                    </div>
+
+                    {/*Priority*/}
+                    <div className="row">
+                        <span style={{
+                            color: "#fffffe",
+                            fontWeight: 300,
+                            fontSize: 20
+                        }}
+                        >priority</span>
+                        <FireTwoTone style={{ width: 23, padding: 3, }} />
+                    </div>
+
                 </div>
 
-                <Divider orientation="left" style={{ width: 100 }}>Personal Projects</Divider>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    {
-                        stae.map((ele) => {
-
-                            return (
-                                <div className="col" onClick={() => alert(ele._id)}>
-                                    <Card
-                                        style={{
-                                            width: 300,
-                                            backgroundColor: "Pink"
-                                        }}
-
-                                        actions={[
-                                            <EditOutlined key="edit" onClick={() => handleNavigation(ele._id)} />,
-                                            <DeleteOutlined key={"delete"} onClick={() => handleDelete(ele._id)} />,
-                                            <EllipsisOutlined key="ellipsis" />,
-                                        ]}
-                                    >
-                                        <Meta
-                                            title={ele.projectName}
-                                            description="This is the description"
-                                        />
-
-                                        {/*container 1*/}
-                                        <div className="d-flex p-1 m-1 container">
-                                            {/*SubmissionDate*/}
-                                            <div className="row">
-                                                <span>submission Date</span>
-                                                <p>
-                                                    {
-                                                        `${new Date(ele.SubmissionDate).getDate()}/${new Date(ele.SubmissionDate).getMonth()+1}/${new Date(ele.SubmissionDate).getFullYear()}`
-                                                    }
-                                                </p>
-                                            </div>
-                                            {/*Priority*/}
-                                            <div className="row">
-                                                <span>priority</span>
-                                                <FireTwoTone style={{ width: 5 }} twoToneColor={PriorityIconColor} />
-                                            </div>
-                                        </div>
-
-                                        {/*container 2*/}
-                                        <div className="d-flex p-1 m-1 container">
-                                            {/*Remaining days
-                                            the text color must change as per remianing days value i.e if small number then it can be red as date of submission is close and if number is big then it can be green to show we still time
-                                            it is yet to implemet
-                                            */}
-                                            <div className="row">
-                                                <span>remaining Days</span>
-                                                <p>{
-                                                    Math.round((new Date(ele.SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
-                                                }</p>
-                                            </div>
-                                        </div>
-
-
-                                    </Card>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-            </div>
-        </>
-    )
+            </Card>
+        </div>)
 }
-
-export default DisplayProjectList
 
 export async function handleDelete(id) {
     try {
@@ -129,9 +179,9 @@ export async function handleDelete(id) {
 
 export async function getData(id) {
     try {
-        const data = (await axios.get(`http://localhost:4000/projects/${id}`)).data
-        console.log(data)
-        return data
+        const d = (await axios.get(`http://localhost:4000/projects/projects/${id}`)).data
+        console.log( [d.personal, d.personal])
+        return [d.personal, d.personal]
     } catch (error) {
 
     }
