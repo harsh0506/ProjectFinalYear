@@ -13,7 +13,6 @@ function Profile() {
   const user = useHookstate(usernameState)
   React.useEffect(() => {
     user.get()._id=== "" ? router.push("/") : setState(user.get())
-     
   }, [])
 
 
@@ -30,12 +29,11 @@ function Profile() {
                     <MDBCardImage src={state.profilepic}
                       alt="Avatar" className="my-5" style={{ width: '100px' ,borderRadius: "50%" }} fluid />
                     <MDBTypography tag="h5" style={{color:"black"}}>{state.userName}</MDBTypography>
-                    <MDBCardText style={{color:"black"}}>Web Designer</MDBCardText>
                     <MDBIcon far icon="edit mb-5" />
                   </MDBCol>
                   <MDBCol md="8">
                     <MDBCardBody className="p-4">
-                      <MDBTypography tag="h6">Information</MDBTypography>
+                      <MDBTypography tag="h6">Profile</MDBTypography>
                       <hr className="mt-0 mb-4" />
                       <MDBRow className="pt-1">
                         <MDBCol size="6" className="mb-3">

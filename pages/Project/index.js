@@ -1,21 +1,24 @@
 import { useHookstate } from '@hookstate/core'
 import axios from 'axios'
 import React from 'react'
-import { usernameState } from '../Helper/globeState'
-import { Panel, Placeholder, Row, Col } from 'rsuite';
-import { UserProj } from '../Helper/globeState/InitialStae';
+import { projectState, usernameState } from '../Helper/globeState'
+import { Panel, Placeholder, Row, Modal, Col, Cascader, Toggle, DatePicker } from 'rsuite';
+import { UserProj, Proj } from '../Helper/globeState/InitialStae';
 import { useRouter } from 'next/router';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, InfoCircleOutlined } from '@ant-design/icons';
-import { Avatar, Card, Button, Modal, Input, Divider, Tooltip } from 'antd';
+import { Avatar, Card, Button, Input, Divider, Tooltip } from 'antd';
+import Todolist from './Create';
+import { TextField } from '@mui/material';
 
 function index({ user }) {
   const UserDetails = useHookstate(usernameState)
   const [stae, setState] = React.useState([UserProj])
   const [err, setError] = React.useState()
   console.log(UserDetails.get()._id)
-  console.log(user)
+  const [user_id, setUser_id] = React.useState("")
 
   React.useEffect(() => {
+    setUser_id(UserDetails.get()._id)
     getData(UserDetails.get()._id).then(res => setState(res)).catch(err => setError(err))
   }, [])
 
@@ -42,6 +45,13 @@ function index({ user }) {
 
         </div>
 
+        <div className="container" style={{
+          textAlign: "left",
+          display: "flex"
+        }}>
+          <CreateProj user_Id={user_id} />
+
+        </div>
 
         <Divider orientation="left" style={{ width: 100, color: "pink", display: "flex", flexDirection: "row" }}>
           <p style={{ marginRight: 5 }}>Personal Project
@@ -52,7 +62,7 @@ function index({ user }) {
         </Divider>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           {
-            stae.map((ele) => {
+            Array.isArray(stae) !== true ? <p>error</p> : stae.map((ele) => {
               return (<Cardcomp ele={ele} />)
             })
           }
@@ -67,7 +77,7 @@ export default index
 
 export async function getData(id) {
   try {
-    return (await axios.get(`http://localhost:4000/projects/${id}`)).data
+    return (await axios.get(`http://localhost:4000/projects/projectId/${id}`)).data
   } catch (error) {
     console.log(error)
   }
@@ -77,15 +87,20 @@ export async function getData(id) {
 export function Cardcomp({ ele }) {
   const router = useRouter()
   const [cardcol, setCardcol] = React.useState("#120609")
+  const project = useHookstate(projectState)
 
-  async function handleNavigation(id) {
+  async function handleNavigation(id, ProjId) {
     try {
+
+      project.set(ele[0])
+
       await router.push({
         pathname: `/Project/${id}`,
         query: {
-          id: id
+          id, ProjId
         }
       })
+
     } catch (error) {
       console.log(error)
     }
@@ -101,14 +116,14 @@ export function Cardcomp({ ele }) {
     }}>
 
       <Card
-       //onClick={() => handleNavigation(ele._id)}
+        onClick={() => handleNavigation(ele._id, ele.projectId)}
         onMouseOver={() => setCardcol("#230a10")}
         onMouseOut={() => setCardcol("#120609")}
 
         actions={[
-          <SettingOutlined key="setting" onMouseOver={()=>setCardcol("#230a10")} />,
+          <SettingOutlined key="setting" onMouseOver={() => setCardcol("#230a10")} />,
           <EditOutlined key="edit" />,
-          <DeleteOutlined key="ellipsis" onClick={()=>{
+          <DeleteOutlined key="ellipsis" onClick={() => {
             delProj(ele._id)
           }} />,
         ]}
@@ -163,10 +178,98 @@ export function Cardcomp({ ele }) {
     </div>)
 }
 
+function CreateProj(props) {
+
+  const user_Id = props.user_Id
+
+  const Prioity = [{ value: "high", label: "high" },
+  { value: "medium", label: "medium" },
+  { value: "low", label: "low" },
+  ]
+
+  const [state, setState] = React.useState(Proj)
+  const project = useHookstate(projectState)
+
+  const router = useRouter()
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setState({ ...state, userId: user_Id })
+
+      const res = await (await axios.post("http://localhost:4000/projects", { ...state, userId: user_Id })).data
+
+      project.set(res[0])
+
+      await router.push({
+        pathname: `/Project/${res[0]._id}`,
+        query: {
+          id: res[0]._id, projId: res[0].projectId
+        }
+      })
+      handleOk()
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+  return (
+
+    <>
+      <Button type="primary" onClick={showModal}>
+        Update
+      </Button>
+      <Modal title="create project" open={isModalOpen} onCancel={handleCancel}>
+        <div style={{ flexDirection: "column" }} className="container">
+          <br></br>
+          <div className="d-flex flex-column container" style={{ gap: "10px" }}>
+            <TextField id="outlined-basic" onChange={(e) => setState({ ...state, projectName: e.target.value })} name="projectName" placeholder='project name ' label="project name" variant="outlined" />
+            <Cascader
+              placeholder="priority"
+              data={Prioity}
+              onSelect={(e) => setState({ ...state, priority: e.value })}
+              style={{ width: 224, color: "black", zIndex: 100000 }} />
+            <DatePicker name="submissionDate" onChange={(e) => { setState({ ...state, SubmissionDate: String(e) }) }} format="yyyy-MM-dd HH:mm:ss" placeholder="submission date" />
+            <div className="d-flex container py-1" >
+              <Toggle size="lg" onChange={(e) => setState({ ...state, personal: e })} checkedChildren="True" unCheckedChildren="False" />
+              <p>personal</p>
+            </div>
+
+            <div className="container">
+              <button onClick={() => {
+                handleSubmit()
+              }
+              }>
+                Create
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </Modal>
+    </>
+
+  );
+}
+
 
 async function delProj(projId) {
   try {
-    
+
     const res = await axios.delete(`http://localhost:4000/projects/${projId}`)
     alert(projId)
   } catch (error) {

@@ -81,8 +81,8 @@ function DummyCal2() {
   let m = [], n = [], o = [], p = [];
 
   React.useEffect(() => {
-    setProjectId({ _id: Proj.get()[0]._id , projectId:Proj.get()[0].projectId })
-    GetCalendarEvents(Proj.get()[0]._id ).then(res => {
+    setProjectId({ _id: Proj.get()[0]._id, projectId: Proj.get()[0].projectId })
+    GetCalendarEvents(Proj.get()[0]._id).then(res => {
       m = res
       console.log(m)
       m.forEach(element => {
@@ -139,16 +139,30 @@ function DummyCal2() {
       }
       setState(state)
     }).catch(err => console.log(err))
-    
+
   }
 
 
   return (
     <>
-      <div className='container' style={{ padding: 10 }}>
+      <div className='' style={{
+        padding: "50",
+        height: "100vh",
+        background: "#3b1b27",
+        width: "100vw"
+      }}>
+
+        <div className="container" style={{
+          textAlign: "left"
+        }}>
+          <h3 style={{
+            color: "#ffff",
+          }}>Calendar</h3>
+        </div>
 
 
         <div className="container">
+
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style={{
             display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center"
           }}>
@@ -156,7 +170,15 @@ function DummyCal2() {
               <p>calendar</p>
               <StaticDatePickerLandscape value={value} setValue={setValue} events={events} />
             </div>
-            <div className='container' style={{ background: "pink" }}>
+            <div className='container' style={{
+              background: "pink",
+              height: 300,
+              display: "flex",
+              flexDirection: "column",
+              gap: 30,
+              fontSize: 30,
+              alignItems: "center"
+            }}>
               <p>Creating Event</p>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <TextField
@@ -185,48 +207,66 @@ function DummyCal2() {
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </div>
-                <Button onClick={handleSubmit}>Confirm</Button>
+                <Button onClick={handleSubmit} style={{
+                  background: "#3b1b27",
+                  color: "white"
+                }}>Confirm</Button>
               </LocalizationProvider>
             </div>
             <div style={{ maxWidth: "50%", maxHeight: 300, overflowY: "scroll" }} className="row">
-              <p>Today's event</p>
+              <p style={{
+                color: "#ffb5d2",
+                fontSize: 25,
+                fontWeight: 500,
+              }}>Today's event</p>
               <TodayEvents userEvents={todayEvent} value={value} />
             </div>
           </div>
         </div>
 
 
-        <p>display event</p>
+        <p style={{
+          color: "#ffb5d2",
+          fontSize: 25,
+          fontWeight: 500,
+        }}>Event</p>
         <div style={{ display: "flex", gap: 50 }} className="d-flex container">
 
 
 
           <div style={{ maxWidth: "50%", maxHeight: 200, overflowY: "scroll" }} className="row">
-            <p>ongoing evets</p>
+            <p style={{
+              color: "#ffb5d2",
+              fontSize: 25,
+              fontWeight: 500,
+            }}>ongoing evets</p>
             <OnGoingTAsk ProjectId={ProjectId} userEvents={userEvents} EmptyHeaderText={"No Ongoing events"} />
           </div>
 
           <div style={{ maxWidth: "50%", maxHeight: 200, overflowY: "scroll" }} className="row">
-            <p>Upcoming Events</p>
+            <p style={{
+              color: "#ffb5d2",
+              fontSize: 25,
+              fontWeight: 500,
+            }}>Upcoming Events</p>
             <OnGoingTAsk ProjectId={ProjectId} userEvents={futureEvents} EmptyHeaderText={"No Upcoming Events"} />
           </div>
 
           <div style={{ maxWidth: "50%", maxHeight: 200, overflowY: "scroll" }} className="row">
-            <p>Previous Events</p>
+            <p style={{
+              color: "#ffb5d2",
+              fontSize: 25,
+              fontWeight: 500,
+            }}>Previous Events</p>
             <OnGoingTAsk ProjectId={ProjectId} userEvents={prevEvents} EmptyHeaderText={"No Previous Events"} />
           </div>
-
-
-
         </div>
-
-
       </div>
     </>
   )
 }
 
-export function OnGoingTAsk({ userEvents, EmptyHeaderText , ProjectId }) {
+export function OnGoingTAsk({ userEvents, EmptyHeaderText, ProjectId }) {
   const [state, setState] = React.useState({
     end: "",
     title: "",
@@ -284,7 +324,11 @@ export function OnGoingTAsk({ userEvents, EmptyHeaderText , ProjectId }) {
         </Modal>
         <div style={{ maxWidth: "50%" }} class="">
           {
-            userEvents.length === 0 ? <h5>{EmptyHeaderText}</h5> : userEvents.map((ele) => {
+            userEvents.length === 0 ? <p style={{
+              color: "#ffb5d2",
+              fontSize: 15,
+              fontWeight: 500,
+            }}>{EmptyHeaderText}</p> : userEvents.map((ele) => {
 
               return (
                 <div className="col" style={{ maxWidth: "50%", minWidth: "40%" }} onClick={() => null}>
@@ -332,10 +376,16 @@ export function TodayEvents({ userEvents }) {
   return (
     <>
       <div className="container">
-        <h3>{new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()}</h3>
+        <h3 style={{
+          color: "#ffb5d2",
+          fontSize: 25,
+          fontWeight: 500,
+        }}>{new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()}</h3>
         <div className="row">
           {
-            am[0].end === "" && am[0].start === "" ? <h5>No Events for Today</h5> : am.map(ele => (<p>{ele.title}</p>))
+            am[0].end === "" && am[0].start === "" ? <h5 style={{
+              color: 'white'
+            }}>No Events for Today</h5> : am.map(ele => (<p>{ele.title}</p>))
           }
         </div>
       </div>
@@ -387,7 +437,7 @@ export function StaticDatePickerLandscape({ value, setValue, events }) {
           events={events}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 400 }} />
+          style={{ height: 400 , color: 'white' }} />
       </div>
 
     </>

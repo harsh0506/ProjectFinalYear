@@ -1,95 +1,147 @@
-import Image from 'next/image'
-import React  from 'react'
-import TextField from '@mui/material/TextField';
-import { LoginMethod } from '../Helper';
-import { useRouter } from 'next/router';
-import { fireBaseLoginReturns } from "../../Helper/globeState";
-import { useHookstate } from '@hookstate/core';
+{
+  /*
+  
+  import { useHookstate } from '@hookstate/core';
+  import { usernameState , fireBaseLoginReturns } from '../../Helper/globeState';
 
-
-function Login() {
-  const router = useRouter()
-  const initialValues = { email: "", password: "" };
-  const [formValues, setFormValues] = React.useState(initialValues);
   const GlobalStateForUserIdFromFireBase = useHookstate(fireBaseLoginReturns)
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    console.log(formValues)
-    const res = await LoginMethod(formValues.email, formValues.password)
-    console.log(res)
-    GlobalStateForUserIdFromFireBase.set({ userEmail: res[0], userId: res[1] })
+  GlobalStateForUserIdFromFireBase.set({ userEmail: res[0], userId: res[1] })
     router.push({
       pathname: '/',
       query: { uid: res },
     })
+
+  */
+}
+
+import React from 'react';
+import { useHookstate } from '@hookstate/core';
+import { usernameState, fireBaseLoginReturns } from '../../Helper/globeState';
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBInput,
+  MDBIcon,
+}
+  from 'mdb-react-ui-kit';
+//you get auth object
+import { app } from './Chat';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import axios from 'axios';
+import { useRouter } from 'next/router';
+
+const auth = getAuth(app)
+
+function Login() {
+
+  const router = useRouter();
+  const GlobalStateForUserIdFromFireBase = useHookstate(fireBaseLoginReturns);
+  const UserDetail = useHookstate(usernameState)
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter your email and password")
+      setError("Please enter your email and password");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      alert("Please enter a valid email address");
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("Please enter a password with at least 6 characters");
+      setError("Please enter a password with at least 6 characters");
+      return;
+    }
+
+    const data = await signInWithEmailAndPassword(auth, email, password)
+
+    try {
+      const res = await (await axios.get(`http://localhost:4000/user/${data.user.uid}`)).data[0]
+      GlobalStateForUserIdFromFireBase.set({ userEmail: data.user.email, userId: data.user.uid })
+      UserDetail.set(res)
+      router.push({
+        pathname: '/',
+        query: { uid: data.user.uid },
+      })
+     
+    } catch (error) {
+      console.log(error)
+    }
   };
 
+  const SIWG = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const user = await signInWithPopup(auth, provider);
+      const userData = {
+        userId: user.user.uid,
+        userEmail: user.user.email,
+        userName: user.user.displayName,
+        userImage: user.user.photoURL
+      }
+
+      return userData
+    } catch (error) {
+      setError(error)
+    }
+
+  };
 
   return (
     <>
-  <section class="h-100 gradient-form" style={{backgroundColor: "#eee"}}>
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-xl-10">
-        <div class="card rounded-3 text-black">
-          <div class="row g-0">
-            <div class="col-lg-6">
-              <div class="card-body p-md-5 mx-md-4">
+      <MDBContainer fluid style={{
+        height: "100vh", background: "#3b1b27", color: "#3b1b27"
+      }}>
 
-                <div class="text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/lotus.webp"
-                    style={{width: "185px"}} alt="logo"/>
-                  <h4 class="mt-1 mb-5 pb-1">We are The Lotus Team</h4>
-                </div>
+        <MDBRow className='d-flex justify-content-center align-items-center h-100'>
+          <MDBCol col='12'>
 
-                <form onSubmit={handleSubmit}>
-                  <p>Please login to your account</p>
+            <MDBCard className='bg-white my-5 mx-auto' style={{ borderRadius: '1rem', border: "none", maxWidth: '500px' }}>
+              <MDBCardBody className='p-5 w-100 d-flex flex-column' >
 
-                  <div class="form-outline mb-4">
-                  <TextField name="email" class="form-control" onChange={handleChange} value={formValues.email} id="outlined-basic" label="Outlined" variant="outlined" />
-                  </div>
+                <h2 className="fw-bold mb-2 text-center">Log in</h2>
+                <p className="text-white-50 mb-3">Please enter your login and password!</p>
 
-                  <div class="form-outline mb-4">
-                  <TextField name="password" class="form-control" onChange={handleChange} value={formValues.password} id="outlined-basic" label="Outlined" variant="outlined" />
-                  </div>
+                <MDBInput wrapperClass='mb-4 w-100' label='Email address' id='formControlLg' style={{ color: "#3b1b27" }} onChange={(e) => setEmail(e.target.value)} type='email' size="lg" />
+                <MDBInput wrapperClass='mb-4 w-100' label='Password' id='formControlLg' onChange={(e) => setPassword(e.target.value)} type='password' size="lg" />
 
-                  <div class="text-center pt-1 mb-5 pb-1">
-                    <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" >Log
-                      in</button>
-                  </div>
+                <MDBBtn size='lg' onClick={handleLogin}>
+                  Login
+                </MDBBtn>
+                <br />
+                <MDBBtn size='lg' style={{ background: "white", color: "blue" }} onClick={() => router.push("/SignUp")}>
+                  No Account? Create one
+                </MDBBtn>
 
-                  <div class="d-flex align-items-center justify-content-center pb-4">
-                    <p class="mb-0 me-2">Don't have an account?</p>
-                    <button onClick={()=>router.push("/Auth/Signin")} class="btn btn-outline-danger">Create new</button>
-                  </div>
+                <hr className="my-4" />
 
-                </form>
+                <MDBBtn className="mb-2 w-100" size="lg" style={{ backgroundColor: '#dd4b39' }} onClick={SIWG}>
+                  <MDBIcon fab icon="google" className="mx-2" />
+                  Sign in with google
+                </MDBBtn>
 
-              </div>
-            </div>
-            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                <h4 class="mb-4">We are more than just a company</h4>
-                <p class="small mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+              </MDBCardBody>
+            </MDBCard>
 
-</>
-  )
+          </MDBCol>
+        </MDBRow>
+
+      </MDBContainer>
+    </>
+  );
 }
 
-export default Login
+export default Login;

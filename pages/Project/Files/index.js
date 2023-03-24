@@ -8,6 +8,7 @@ there some features that are must to be implemented
 */
 import { useHookstate } from '@hookstate/core'
 import axios from 'axios'
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from 'firebase/storage'
 import fileDownload from 'js-file-download'
 import { useRouter } from 'next/router'
@@ -32,8 +33,11 @@ function Files() {
   const Proj = useHookstate(projectState)
   //state to store data of the current project , and set function to set the project
   const [Project, setProject] = React.useState(UserProj)
+  const [cardcol, setCardcol] = React.useState("#120609")
 
-  
+  const [prevURL, setPrevURL] = React.useState("")
+
+
 
   React.useEffect(() => {
     console.log(router.query)
@@ -76,20 +80,11 @@ function Files() {
   */
 
   const handlePreview = async (url, docName) => {
-    try {
-      setIsModalOpen(true)
-      let dataType = docName.split(".")[1]
-      if (dataType === "png" || dataType === "jpeg" || dataType === "jpg" || dataType === "gif" || dataType === "tiff" || dataType === "pdf") {
-        setFileType(<img src={url} style={{ width: 300 }} />)
-       
-      }
-      if (dataType === "pdf") {
-        
-      }
-    } catch (error) {
-
-    }
-
+    setPrevURL({
+      uri: url,
+      fileName: docName,
+    })
+    setIsModalOpen(true)
   }
 
 
@@ -101,18 +96,38 @@ function Files() {
   };
 
   /*
-  Now the here documents are displayed
+  Now here documents are displayed
   */
 
   return (
     <>
-      <div className='container'>
+      <div style={{
+        display: "flex",
+        background: "#3b1b27"
+      }} className="">
 
         <UploadFile Id={Project.projectId} />
         <Modal title="Update Task" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-          {
-            fileTyep
-          }
+          <DocViewer
+
+            theme={{
+              primary: "#5296d8",
+              secondary: "#ffffff",
+              tertiary: "#5296d899",
+              textPrimary: "#ffffff",
+              textSecondary: "#5296d8",
+              textTertiary: "#00000099",
+              disableThemeScrollbar: false,
+            }}
+            style={{
+              width: 500,
+              height: 500,
+              color: "black"
+            }}
+            documents={[prevURL]}
+            //activeDocument={activeDocument}
+            onDocumentChange={handleDocumentChange}
+            pluginRenderers={DocViewerRenderers} />
         </Modal>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           {
@@ -121,9 +136,15 @@ function Files() {
               return (<>
                 <div className="col">
                   <Card
+
+                    onMouseOver={() => setCardcol("#230a10")}
+                    onMouseOut={() => setCardcol("#120609")}
+
                     style={{
                       width: 300,
+                      background: cardcol
                     }}
+
                     cover={
                       <img
                         alt="image preview"

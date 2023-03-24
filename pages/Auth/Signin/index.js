@@ -1,120 +1,109 @@
-import Image from 'next/image'
-import React , {useEffect , useState} from 'react'
-import TextField from '@mui/material/TextField';
-import { useRouter } from 'next/router'
+import React from 'react';
+import {
+    MDBBtn,
+    MDBContainer,
+    MDBRow,
+    MDBCol,
+    MDBCard,
+    MDBCardBody,
+    MDBInput,
+}
+    from 'mdb-react-ui-kit';
+//you get auth object
+import { app } from '../FirebaseConfig';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { useHookstate } from '@hookstate/core';
+import { usernameState } from '../../Helper/globeState';
+const auth = getAuth(app)
 
-function Signup() {
-  const router = useRouter()
+function App() {
 
-  const initialValues = { username: "", email: "", password: "" };
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormErrors(validate(formValues));
-    setIsSubmit(true);
-    (Object.keys(formErrors).length === 0 && isSubmit )? router.push("/") : console.log("errors")
+    const router = useRouter()
+    const UserDetail = useHookstate(usernameState)
     
-  };
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [gitUrl, setGitUrl] = React.useState("");
+    const [username, setUsername] = React.useState("")
+    const [error, setError] = React.useState("");
 
-  
+    const handleLogin = () => {
+        if (!email || !password || !gitUrl || !username) {
+            alert("Please enter all data")
+            setError("Please enter all data");
+            return;
+        }
 
- 
-  const validate = (values) => {
-    const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    if (!values.username) {
-      errors.username = "Username is required!";
-    }
-    if (!values.email) {
-      errors.email = "Email is required!";
-    } else if (!regex.test(values.email)) {
-      errors.email = "This is not a valid email format!";
-    }
-    if (!values.password) {
-      errors.password = "Password is required";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
-    }
-    return errors;
-  };
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            alert("Please enter a valid email address");
+            setError("Please enter a valid email address");
+            return;
+        }
 
+        if (password.length < 6) {
+            alert("Please enter a password with at least 6 characters");
+            setError("Please enter a password with at least 6 characters");
+            return;
+        }
 
-  return (
-    <>
-  <section className="h-100 gradient-form" style={{backgroundColor: "#eee"}}>
-  <div className="container py-2 h-100">
-    <div className="row d-flex justify-content-center align-items-center h-90">
-      <div className="col-xl-10">
-        <div className="card rounded-3 text-black">
-          <div className="row g-0">
-            <div className="col-lg-6">
-              <div className="card-body p-md-5 mx-md-4">
+        createUserWithEmailAndPassword(auth, email, password).then(async (res) => {
+            try {
+                const info = await axios.post("http://localhost:4000/user", {
+                    "userName": username,
+                    "userId": res.user.uid,
+                    "profilepic": `https://api.dicebear.com/5.x/lorelei/svg?seed=${username}`,
+                    "userEmail": res.user.email,
+                    "githubUrl": gitUrl,
+                })
+                UserDetail.set(info.data[0])
+                router.push("/")
+            } catch (error) {
+                setError(error)
+            }
 
-                <div className="text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/lotus.webp"
-                    style={{width: "185px"}} alt="logo"/>
-                  <h4 className="mt-1 mb-5 pb-1">We are The Lotus Team</h4>
-                </div>
+        }).catch((err) => console.log(err))
 
-                <form onSubmit={handleSubmit}>
-                  <p>Please login to your account</p>
+    };
 
-                  <div className="form-outline mb-4">
-                  <TextField name='username' onChange={handleChange} value={formValues.username} className="form-control" id="outlined-basic" label="Outlined" variant="outlined" />
-                  <p>{formErrors.username}</p>
-                  </div>
+    return (
+        <>
+            <MDBContainer fluid style={{
+                height: "100vh", background: "#3b1b27", color: "#3b1b27"
+            }}>
 
-                  <div className="form-outline mb-4">
-                  <TextField name='email' onChange={handleChange} value={formValues.email}  className="form-control" id="outlined-basic" label="Outlined" variant="outlined" />
-                  <p>{formErrors.email}</p>
-                  </div>
+                <MDBRow className='d-flex justify-content-center align-items-center h-100'>
+                    <MDBCol col='12'>
 
-                  <div className="form-outline mb-4">
-                  <TextField name='password' onChange={handleChange} value={formValues.password}  className="form-control" id="outlined-basic" label="Outlined" variant="outlined" />
-                  <p>{formErrors.password}</p>
-                  </div>
+                        <MDBCard className='bg-white my-5 mx-auto' style={{ borderRadius: '1rem', border: "none", maxWidth: '500px' }}>
+                            <MDBCardBody className='p-5 w-100 d-flex flex-column' >
 
-                  <div className="text-center pt-1 mb-2 pb-1">
-                    <button className="btn btn-primary btn-block fa-lg gradient-custom-2 " >Log
-                      in</button>
-                  </div>
+                                <h2 className="fw-bold mb-2 text-center">Sign UP</h2>
+                                <p className="text-black-50 mb-3" style={{ color: "black" }}>Please enter your login, password and giturl</p>
 
-                  <div className="d-flex align-items-center justify-content-center ">
-                    <p className="mb-0 me-2">Have a Account?</p>
-                    <button onClick={()=>router.push("/Auth/Login")} className="btn btn-outline-danger">Login now</button>
-                  </div>
+                                <MDBInput wrapperClass='mb-4 w-100' label='Email address' id='formControlLg' style={{ color: "#3b1b27" }} onChange={(e) => setEmail(e.target.value)} type='email' size="lg" />
+                                <MDBInput wrapperClass='mb-4 w-100' label='Password' id='formControlLg' onChange={(e) => setPassword(e.target.value)} type='password' size="lg" />
+                                <MDBInput wrapperClass='mb-4 w-100' label='Username' id='formControlLg' style={{ color: "#3b1b27" }} onChange={(e) => setUsername(e.target.value)} type='username' size="lg" />
+                                <MDBInput wrapperClass='mb-4 w-100' label='Git url' id='formControlLg' style={{ color: "#3b1b27" }} onChange={(e) => setGitUrl(e.target.value)} type='url' size="lg" />
 
-                </form>
+                                <MDBBtn size='lg' onClick={handleLogin}>
+                                    Sign Up
+                                </MDBBtn>
+                                <br />
+                                <MDBBtn size='lg' style={{ background: "white", color: "blue" }} onClick={() => router.push("/Login")}>
+                                    Already have accont? Login here
+                                </MDBBtn>
 
-              </div>
-            </div>
-            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                <h4 class="mb-4">We are more than just a company</h4>
-                <p class="small mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+                            </MDBCardBody>
+                        </MDBCard>
 
-</>
-  )
+                    </MDBCol>
+                </MDBRow>
+
+            </MDBContainer>
+        </>
+    );
 }
 
-export default Signup
+export default App;

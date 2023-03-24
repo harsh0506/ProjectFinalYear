@@ -13,7 +13,7 @@ import {  } from 'antd';
 one state that keep track of the user field data while creating the project
 one global state to set the project in 
 */
-function ModalTodo({ isModalOpen, teamid 
+function ModalTodo({ isModalOpen, teamid , personal
   , setIsModalOpen, handleCancel, data,handleOk, Prioity }) {
 
   const [state, setState] = React.useState(Proj)
@@ -34,9 +34,9 @@ function ModalTodo({ isModalOpen, teamid
         userId: UserNameS.get()._id,
         dateOfCreation: String(new Date()),
         teamAdminId: UserNameS.get()._id,
-        teamId: UserTeam.get()._id.length === 0  ? "" : UserTeam.get()._id,
-        projectId: (Math.random() + 1).toString(36).substring(7),
-        personal: (UserTeam.get()._id.length === 0 || teamid.length === 0 ) ? true : false,
+        teamId: teamid === ""  ? "" : UserTeam.get()._id,
+        projectId: String((Math.random() + 1).toString(36).substring(7)),
+        personal: personal ===true ? true : false,
       })
 
      

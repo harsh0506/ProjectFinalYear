@@ -12,13 +12,12 @@ import axios from 'axios'
 import React from 'react'
 import { TeamMembers, UserTask, projectState } from '../../Helper/globeState'
 import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, CloseCircleTwoTone, CheckCircleOutlined, FireTwoTone } from '@ant-design/icons';
-import { Avatar, Card } from 'antd';
+import { Avatar, Card, Tooltip, Divider } from 'antd';
 import { TextField } from "@mui/material";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { Modal, Toggle, Cascader, ButtonToolbar, Button, Loader, Placeholder, DatePicker } from 'rsuite';
-import Divider from '@mui/material/Divider';
 import { useHookstate } from '@hookstate/core';
 
 const { Meta } = Card;
@@ -151,10 +150,26 @@ function DummyTask1() {
   if (error) { return (<p>{error}</p>) }
 
   return (
-    <div className='container'>
+    <div className='' style={{
+      background: "#3b1b27"
+    }}>
 
-      <div className="container p-2">
-        <button onClick={showModal}>Create Task</button>
+      <div className="container ">
+
+        <div className="container" style={{
+          textAlign: "left"
+        }}>
+          <h3 style={{
+            color: "#dabbc4"
+          }}>TaskList</h3>
+        </div>
+
+        <div className="container" style={{
+          textAlign: "left"
+        }}>
+          <Button onClick={showModal}>Create Task</Button>
+        </div>
+
         <Modal title="Create Task" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
 
           <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -193,7 +208,7 @@ function DummyTask1() {
                 placeholder="priority"
                 data={Prioity}
                 onSelect={(e) => setState({ ...state, priority: e.value })}
-                style={{ width: 224, color: "black" , zIndex:1000 }} />
+                style={{ width: 224, color: "black", zIndex: 1000 }} />
 
               {/* assign teamMember drop down */}
 
@@ -201,7 +216,7 @@ function DummyTask1() {
                 <Cascader
                   placeholder="TM"
                   data={Team_members}
-                  onSelect={(e) =>setState({ ...state, userName:e.label , userId:e.value })}
+                  onSelect={(e) => setState({ ...state, userName: e.label, userId: e.value })}
                   style={{ width: 224, color: "black" }} />
 
               }
@@ -230,24 +245,33 @@ function DummyTask1() {
         </Modal>
       </div>
 
-      {Team_members.length}
 
       <div className="container" style={{
         width: "200vw",
-        background: "red",
       }}>
-        p
-        assigned Tasks
-        <DisplayTask Tasks={assigedTask} ProjectId={ProjectId._id} HandleUpdateData={HandleUpdateData} msg={"assigned"} />
+        <Divider orientation="left" style={{ width: 100, color: "pink", display: "flex", flexDirection: "row" }}>
+          <p style={{ marginRight: 5 }}>Personal Project
+            <Tooltip title="You can only make 3 Projects">
+              <InfoCircleOutlined style={{ marginLeft: 15 }} />
+            </Tooltip>
+          </p>
+        </Divider>
+        <DisplayTask Tasks={assigedTask} HandleUpdateData={HandleUpdateData} msg={"assigned"} />
 
       </div>
+
       <br />
       <div className="container" style={{
         width: "200vw",
-        background: "red",
       }}>
-        Comppleted Tasks
-        <DisplayTask Tasks={completedTask} ProjectId={ProjectId._id} HandleUpdateData={HandleUpdateData} msg={"completed"} />
+        <Divider orientation="left" style={{ width: 100, color: "pink", display: "flex", flexDirection: "row" }}>
+          <p style={{ marginRight: 5 }}>Personal Project
+            <Tooltip title="You can only make 3 Projects">
+              <InfoCircleOutlined style={{ marginLeft: 15 }} />
+            </Tooltip>
+          </p>
+        </Divider>
+        <DisplayTask Tasks={completedTask} HandleUpdateData={HandleUpdateData} msg={"completed"} />
       </div>
 
 
@@ -258,11 +282,12 @@ function DummyTask1() {
 export default DummyTask1
 
 export function DisplayTask({ Tasks, HandleUpdateData, msg, ProjectId }) {
+  const [cardcol, setCardcol] = React.useState("#120609")
+
   console.log(msg)
   return (
     <>
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 p-2 my-2">
-        {Tasks.length}
         {
           Tasks.map((ele) => {
             return (
@@ -270,7 +295,7 @@ export function DisplayTask({ Tasks, HandleUpdateData, msg, ProjectId }) {
                 <Card
                   style={{
                     width: 300,
-                    background: "pink"
+                    background: cardcol
                   }}
 
                   actions={[
@@ -287,21 +312,33 @@ export function DisplayTask({ Tasks, HandleUpdateData, msg, ProjectId }) {
                     }} />,
                   ]}
                 >
-                  <Meta
-                    avatar={<Avatar src="https://static.thenounproject.com/png/4038155-200.png" />}
-                    title={ele.taskName}
-                  />
-                  <div className="row">
-                    <span>priority</span>
-                    <FireTwoTone style={{ width: 5 }} twoToneColor={ele.color} />
-                  </div>
-                  <div className="d-flex p-1 m-1 container">
+                  <p style={{
+                    color: "#ffb5d2",
+                    fontSize: 25,
+                    fontWeight: 500,
+                  }}>
+                    {ele.taskName}
+                  </p>
 
-                    <DisplayDays
-                      SubmissionDate={ele.SubmissionDate}
-                      dateOfActualSubmission={ele.dateOfActualSubmission}
-                      Status={ele.Status}
-                    />
+                  <div className="d-flex p-1 m-1 container">
+                    <div className="row">
+                      <span style={{
+                        color: "#fffffe",
+                        fontWeight: 300,
+                        fontSize: 20
+                      }}
+                      >priority</span>
+                      <FireTwoTone twoToneColor={ele.color} style={{ width: 23, padding: 3, }} />
+                    </div>
+
+                    <div className="d-flex p-1 m-1 container">
+
+                      <DisplayDays
+                        SubmissionDate={ele.SubmissionDate}
+                        dateOfActualSubmission={ele.dateOfActualSubmission}
+                        Status={ele.Status}
+                      />
+                    </div>
                   </div>
                 </Card>
 
@@ -315,24 +352,47 @@ export function DisplayTask({ Tasks, HandleUpdateData, msg, ProjectId }) {
 }
 
 export function DisplayDays({ SubmissionDate, dateOfActualSubmission, Status }) {
+  const RD = Math.round((new Date(SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
   return (
     <div className="row">
       {
 
         (Status === "assigned") ? (
           <>
-            <span>remaining Days</span>
-            <p>{
-              Math.round((new Date(SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
-            }</p>
+            <div className="row" style={{
+              width: 180
+            }}>
+              <span style={{
+                color: "#fffffe",
+                fontWeight: 300,
+                fontSize: 20
+              }}>remaining Days</span>
+              <p style={{
+                color: RD < 10 ? "red" : "green",
+                fontSize: 22,
+                fontWeight: 400
+              }}>{RD}</p>
+            </div>
           </>
         )
           : (
             <>
-              <span>Compltede on</span>
-              <p>{
-                new Date(dateOfActualSubmission).getDate()}/{new Date(dateOfActualSubmission).getMonth() + 1}/{new Date(dateOfActualSubmission).getFullYear()
+              <div className="row" style={{
+                width: 180
+              }}>
+                <span style={{
+                  color: "#fffffe",
+                  fontWeight: 300,
+                  fontSize: 20
+                }}>remaining Days</span>
+                <p style={{
+                  color: RD < 10 ? "red" : "green",
+                  fontSize: 22,
+                  fontWeight: 400
+                }}>{
+                  new Date(dateOfActualSubmission).getDate()}/{new Date(dateOfActualSubmission).getMonth() + 1}/{new Date(dateOfActualSubmission).getFullYear()
                 }</p>
+              </div>
             </>
 
           )}

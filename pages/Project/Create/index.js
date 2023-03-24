@@ -16,7 +16,7 @@ const Prioity = [{ value: "high", label: "high" },
 { value: "low", label: "low" },
 ]
 
-function Todolist({Teamid}) {
+function Todolist({Teamid , personal}) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [teamid , setTeam] = React.useState("")
   React.useEffect(()=>{
@@ -45,6 +45,7 @@ function Todolist({Teamid}) {
         data={data}
         Prioity={Prioity}
         teamid={teamid}
+        personal={personal}
       />
     </div>
         

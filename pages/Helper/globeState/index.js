@@ -5,7 +5,9 @@ import { UserTeams, UserProj, Task } from './InitialStae';
 //state of user 
 export const fireBaseLoginReturns = hookstate({
     userId: "",
-    userEmail: ""
+    userEmail: "",
+    userName:"",
+    userImage:""
 })
 //global state to set usermail and id
 export const usernameState = hookstate({

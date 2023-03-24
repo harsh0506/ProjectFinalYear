@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import ProjCreate from "../../Project/Create"
 import { CurTeam, projectState, TeamMembers, userProjects } from '../../Helper/globeState'
-import { Avatar, Card, Modal } from 'antd';
+import { Avatar, Card, Modal, Tooltip } from 'antd';
 import { Panel, Placeholder, Row, Col, Divider } from 'rsuite';
 import { useHookstate } from '@hookstate/core';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, CheckCircleOutlined } from '@ant-design/icons';
@@ -31,6 +31,8 @@ function TeamDetail({ }) {
   const [users, setUsers] = React.useState([userDetailsIS])
   const [projects, setProjects] = React.useState([UserProj])
   const [PriorityIconColor, setPriorityIconColor] = React.useState("red")
+
+  const [cardcol, setCardcol] = React.useState("#120609")
 
   //use effect to run at start of rendering
   React.useEffect(() => {
@@ -69,33 +71,66 @@ function TeamDetail({ }) {
   }
 
   return (
-    <div className='container my-4'>
-      <p style={{ fontSize: 40 }}>{state.teamName}</p>
+    <div className=' my-4' style={{
+      background: "#3b1b27",
+      height: "100vh",
+      width: "100vw",
+      marginLeft:50
+    }}>
+      <h2 style={{
+        color: "#fffffe",
+        fontWeight: 600,
+        fontSize: 45
+      }}>
+        {state.teamName}</h2>
+
+      <Chat teamId={state._id}/>
+
       <Divider orientation="left" style={{ width: 100 }}>Team Members</Divider>
       {
         users.length < 3 ? <AddMemBer teamid={state.teamid} usersLen={users.length} /> : <p>can not add members</p>
       }
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div style={{
+        background: "#3b1b27"
+      }} class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
           users[0].userEmail === "" ? <>No users</> : users.map((ele) => (
             <>
               <div className="col" onClick={() => alert(ele._id)}>
                 <Card
 
+                  onMouseOver={() => setCardcol("#230a10")}
+                  onMouseOut={() => setCardcol("#120609")}
+
                   style={{
                     width: 300,
+                    background: cardcol,
+                    border: "none",
+                    borderRadius: "20px"
                   }}
 
                   actions={[
                     <DeleteOutlined key="setting" onClick={() => DelFromArray(state.teamid, { "teamMembers": ele._id })} />,
                   ]}
                 >
-                  <Meta
-                    avatar={<Avatar src={ele.profilepic} />}
-                    title={ele.userName}
-                    description={ele.userEmail}
-                  />
+
+                  <h3 style={{
+                    color: "#fffffe",
+                    fontSize: 25,
+                    fontWeight: 500,
+                  }}>
+                    {ele.userName}
+                  </h3>
+
+                  <h3 style={{
+                    color: "#fffffe",
+                    fontSize: 25,
+                    fontWeight: 500,
+                  }}>
+                    {ele.userEmail}
+                  </h3>
+
                 </Card>
               </div>
             </>
@@ -108,15 +143,19 @@ function TeamDetail({ }) {
         projects.length < 3 ? <button>
           <ProjCreate Teamid={state._id} />
         </button>
-          : <p>can not add projects</p>
+          : <p style={{
+            color: "#ffb5d2",
+            fontSize: 25,
+            fontWeight: 500,
+          }}>can not add projects</p>
       }
 
-
-
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div style={{
+        background: "#3b1b27"
+      }} class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
-
-            projects.map((item) => {
+          projects.map((item) => {
+            let RD = Math.round((new Date(item.SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
             return (
               <>
                 <div className="col" onClick={() => alert(item._id)}>
@@ -133,36 +172,36 @@ function TeamDetail({ }) {
                     <Meta
                       title={item.projectName}
                     />
-                    {/*container 1*/}
                     <div className="d-flex p-1 m-1 container">
-                      {/*SubmissionDate*/}
-                      <div className="row">
-                        <span>submission Date</span>
-                        <p>
-                          {
-                            `${new Date(item.SubmissionDate).getDate()}/${new Date(item.SubmissionDate).getMonth() + 1}/${new Date(item.SubmissionDate).getFullYear()}`
-                          }
+
+                      <div className="row" style={{
+                        width: 180
+                      }}>
+                        <span style={{
+                          color: "#fffffe",
+                          fontWeight: 300,
+                          fontSize: 20
+                        }}>remaining Days</span>
+                        <p style={{
+                          color: RD < 10 ? "red" : "green",
+                          fontSize: 22,
+                          fontWeight: 400
+                        }}>
+                          {RD}
                         </p>
                       </div>
+
                       {/*Priority*/}
                       <div className="row">
-                        <span>priority</span>
-                        <FireTwoTone style={{ width: 5 }} twoToneColor={PriorityIconColor} />
+                        <span style={{
+                          color: "#fffffe",
+                          fontWeight: 300,
+                          fontSize: 20
+                        }}
+                        >priority</span>
+                        <FireTwoTone style={{ width: 23, padding: 3, }} />
                       </div>
-                    </div>
 
-                    {/*container 2*/}
-                    <div className="d-flex p-1 m-1 container">
-                      {/*Remaining days
-                    the text color must change as per remianing days value i.e if small number then it can be red as date of submission is close and if number is big then it can be green to show we still time
-                    it is yet to implemet
-                  */}
-                      <div className="row">
-                        <span>remaining Days</span>
-                        <p>{
-                          Math.round((new Date(item.SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
-                        }</p>
-                      </div>
                     </div>
 
                     {/* conatiner 3 */}
