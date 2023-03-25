@@ -17,7 +17,8 @@ export const UserTeams = {
     teamMembers: [],
     inviteCode: "",
     projectList: [],
-    _id: " "
+    _id: " ",
+    dateOfCreation:new Date()
 }
 
 export const Task = {

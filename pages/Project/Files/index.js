@@ -126,7 +126,7 @@ function Files() {
             }}
             documents={[prevURL]}
             //activeDocument={activeDocument}
-            onDocumentChange={handleDocumentChange}
+            //onDocumentChange={handleDocumentChange}
             pluginRenderers={DocViewerRenderers} />
         </Modal>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">

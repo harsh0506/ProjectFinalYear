@@ -1,17 +1,7 @@
-/*
-import { TeamMembers, UserTask } from '../../Helper/globeState'
-const [Team_Members, setTeam_Members] = React.useState([{
-    label: "", value: ""
-  }])
-   
-TaskList
-*/
-
-
 import axios from 'axios'
 import React from 'react'
 import { TeamMembers, UserTask, projectState } from '../../Helper/globeState'
-import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, CloseCircleTwoTone, CheckCircleOutlined, FireTwoTone } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, InfoCircleOutlined, CloseCircleTwoTone, CheckCircleOutlined, FireTwoTone } from '@ant-design/icons';
 import { Avatar, Card, Tooltip, Divider } from 'antd';
 import { TextField } from "@mui/material";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -19,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { Modal, Toggle, Cascader, ButtonToolbar, Button, Loader, Placeholder, DatePicker } from 'rsuite';
 import { useHookstate } from '@hookstate/core';
+import { useRouter } from 'next/router';
 
 const { Meta } = Card;
 
@@ -41,6 +32,8 @@ const schema = {
 }
 
 function DummyTask1() {
+
+  const router = useRouter()
 
   const Proj = useHookstate(projectState)
 
@@ -76,7 +69,10 @@ function DummyTask1() {
   }])*/
 
   React.useEffect(() => {
-    setProjectId({ _id: Proj.get()[0]._id, projectId: Proj.get()[0].projectId })
+    setProjectId({
+      _id: router.query.id,
+      projectId: router.query.ProjId
+    })
     //setTeam_Members(TeamMemberS.get())
     GetCalendarEvents(Proj.get()[0]._id).then((res) => {
       setAssignedTask(res[0])
@@ -256,7 +252,7 @@ function DummyTask1() {
             </Tooltip>
           </p>
         </Divider>
-        <DisplayTask Tasks={assigedTask} HandleUpdateData={HandleUpdateData} msg={"assigned"} />
+        <DisplayTask Tasks={assigedTask} ProjectId={ProjectId._id} HandleUpdateData={HandleUpdateData} msg={"assigned"} />
 
       </div>
 
@@ -271,7 +267,7 @@ function DummyTask1() {
             </Tooltip>
           </p>
         </Divider>
-        <DisplayTask Tasks={completedTask} HandleUpdateData={HandleUpdateData} msg={"completed"} />
+        <DisplayTask Tasks={completedTask} ProjectId={ProjectId._id} HandleUpdateData={HandleUpdateData} msg={"completed"} />
       </div>
 
 
@@ -390,8 +386,8 @@ export function DisplayDays({ SubmissionDate, dateOfActualSubmission, Status }) 
                   fontSize: 22,
                   fontWeight: 400
                 }}>{
-                  new Date(dateOfActualSubmission).getDate()}/{new Date(dateOfActualSubmission).getMonth() + 1}/{new Date(dateOfActualSubmission).getFullYear()
-                }</p>
+                    new Date(dateOfActualSubmission).getDate()}/{new Date(dateOfActualSubmission).getMonth() + 1}/{new Date(dateOfActualSubmission).getFullYear()
+                  }</p>
               </div>
             </>
 
@@ -446,7 +442,7 @@ export async function DeleteItem(id, d) {
 export async function UpdateTask(Pid, d) {
   try {
     const m = await (await axios.put(`http://localhost:4000/projects/arrayUpdateAll/${Pid}`, d)).data
-
+    console.log(m)
     return m
 
   } catch (error) {

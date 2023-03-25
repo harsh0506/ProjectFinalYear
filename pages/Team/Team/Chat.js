@@ -7,14 +7,15 @@ import { Button, Modal, Avatar } from "antd";
 import { useHookstate } from "@hookstate/core";
 import { getAuth } from "firebase/auth";
 
-import { firebaseConfig } from "../../Auth/FirebaseConfig"
-
-const app = initializeApp(firebaseConfig);
+import { app, firebaseConfig } from "../../Auth/FirebaseConfig"
+import { useRouter } from "next/router";
+import { usernameState } from "../../Helper/globeState";
 
 const firestore = getFirestore(app);
-const auth = getAuth()
 
 export default function Chat(props) {
+
+    const teamID = props.teamId
 
     const [state, setState] = React.useState({
         uid: "",
@@ -22,14 +23,18 @@ export default function Chat(props) {
         teamId: ""
     })
 
+    const user = useHookstate(usernameState)
+
     React.useState(() => {
         setState({
-            teamId: String(props.teamId),
-            uid: auth.currentUser,
-            photoURL: auth.currentUser.email
+            teamId: String(teamID),
+            uid: user.get().userId,
+            photoURL: user.get().profilepic
         })
     })
-    return <div className="App">{state ? <Chatroom state={state} /> : <Signin />}</div>;
+    return (<div className="App">
+        <Chatroom state={state} />
+    </div>);
 }
 
 export function Chatroom({ state }) {
@@ -52,7 +57,7 @@ export function Chatroom({ state }) {
         limit(25),
     );
 
-    const [value, loading, error] = useCollectionData(messageQuery, { idField: "id" });
+    const [value, loading, error] = useCollectionData(messageQuery);
 
     console.log(value)
 
@@ -83,15 +88,14 @@ export function Chatroom({ state }) {
         return <div>Loading...</div>;
     }
 
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
+    
+
 
     return (
         <>
             <>
                 <Button type="primary" onClick={showModal}>
-                    Open Modal with async logic
+                    Group Chat
                 </Button>
                 <Modal title="Group Chat Message" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} style={{
                     height: 400, background: "pink"
@@ -167,17 +171,7 @@ export function ChatMessage(props) {
                 alignItems: "center",
                 flexDirection: messageClass === "sent" ? "row" : "row-reverse"
             }}>
-                <Avatar
-                    style={{
-                        backgroundColor: "black",
-                        verticalAlign: 'middle',
-                        color: "white"
-                    }}
-                    size="large"
-                    gap={3}
-                >
-                    {photoURL.slice(0, 3)}
-                </Avatar>
+                <img src={photoURL} alt="profile" />
                 <p style={{
                     color: "black",
                     background: "#0b93f6",

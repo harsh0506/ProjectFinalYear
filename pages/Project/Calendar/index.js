@@ -32,6 +32,7 @@ import { Card, Button, Modal } from 'antd';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from "moment";
+import { useRouter } from 'next/router';
 
 const { Meta } = Card;
 
@@ -48,6 +49,8 @@ const schema = {
 const localizer = momentLocalizer(moment)
 
 function DummyCal2() {
+
+  const router = useRouter()
 
   const Proj = useHookstate(projectState)
 
@@ -81,7 +84,10 @@ function DummyCal2() {
   let m = [], n = [], o = [], p = [];
 
   React.useEffect(() => {
-    setProjectId({ _id: Proj.get()[0]._id, projectId: Proj.get()[0].projectId })
+    setProjectId({
+      _id: router.query.id,
+      projectId: router.query.ProjId
+    })
     GetCalendarEvents(Proj.get()[0]._id).then(res => {
       m = res
       console.log(m)
@@ -240,7 +246,7 @@ function DummyCal2() {
               fontSize: 25,
               fontWeight: 500,
             }}>ongoing evets</p>
-            <OnGoingTAsk ProjectId={ProjectId} userEvents={userEvents} EmptyHeaderText={"No Ongoing events"} />
+            <OnGoingTAsk ProjectId={ProjectId._id} userEvents={userEvents} EmptyHeaderText={"No Ongoing events"} />
           </div>
 
           <div style={{ maxWidth: "50%", maxHeight: 200, overflowY: "scroll" }} className="row">
@@ -249,7 +255,7 @@ function DummyCal2() {
               fontSize: 25,
               fontWeight: 500,
             }}>Upcoming Events</p>
-            <OnGoingTAsk ProjectId={ProjectId} userEvents={futureEvents} EmptyHeaderText={"No Upcoming Events"} />
+            <OnGoingTAsk ProjectId={ProjectId._id} userEvents={futureEvents} EmptyHeaderText={"No Upcoming Events"} />
           </div>
 
           <div style={{ maxWidth: "50%", maxHeight: 200, overflowY: "scroll" }} className="row">
@@ -258,7 +264,7 @@ function DummyCal2() {
               fontSize: 25,
               fontWeight: 500,
             }}>Previous Events</p>
-            <OnGoingTAsk ProjectId={ProjectId} userEvents={prevEvents} EmptyHeaderText={"No Previous Events"} />
+            <OnGoingTAsk ProjectId={ProjectId._id} userEvents={prevEvents} EmptyHeaderText={"No Previous Events"} />
           </div>
         </div>
       </div>
@@ -290,7 +296,7 @@ export function OnGoingTAsk({ userEvents, EmptyHeaderText, ProjectId }) {
       }
     }
 
-    updateData("63ac28cbf8f9aa38a853831b", d).then(res => console.log(res)).catch(err => console.log(err))
+    updateData(ProjectId, d).then(res => console.log(res)).catch(err => console.log(err))
     setIsModalOpen(false);
   };
   const handleCancel = () => {
@@ -437,7 +443,7 @@ export function StaticDatePickerLandscape({ value, setValue, events }) {
           events={events}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 400 , color: 'white' }} />
+          style={{ height: 400, color: 'white' }} />
       </div>
 
     </>

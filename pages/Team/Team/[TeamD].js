@@ -3,13 +3,14 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import ProjCreate from "../../Project/Create"
 import { CurTeam, projectState, TeamMembers, userProjects } from '../../Helper/globeState'
-import { Avatar, Card, Modal, Tooltip } from 'antd';
+import { Avatar, Button, Card, Modal, Tooltip } from 'antd';
 import { Panel, Placeholder, Row, Col, Divider } from 'rsuite';
 import { useHookstate } from '@hookstate/core';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, CheckCircleOutlined } from '@ant-design/icons';
 import { UserProj, UserTeams, userDetailsIS } from '../../Helper/globeState/InitialStae'
 import { TextField } from '@mui/material'
 const { Meta } = Card;
+import Chat from "./Chat"
 
 
 function TeamDetail({ }) {
@@ -55,7 +56,7 @@ function TeamDetail({ }) {
       .catch((err) => {
         console.log(err)
       })
-  }, [getUserTeams])
+  }, [])
 
   //navigate to project page
   async function handleNavigation(id, data) {
@@ -75,7 +76,7 @@ function TeamDetail({ }) {
       background: "#3b1b27",
       height: "100vh",
       width: "100vw",
-      marginLeft:50
+      marginLeft: 50
     }}>
       <h2 style={{
         color: "#fffffe",
@@ -84,18 +85,28 @@ function TeamDetail({ }) {
       }}>
         {state.teamName}</h2>
 
-      <Chat teamId={state._id}/>
+      <Chat teamId={state._id} />
 
       <Divider orientation="left" style={{ width: 100 }}>Team Members</Divider>
       {
-        users.length < 3 ? <AddMemBer teamid={state.teamid} usersLen={users.length} /> : <p>can not add members</p>
+        Array.isArray(users) && users.length < 3 ? <AddMemBer teamid={state.teamid} usersLen={users.length} /> : <p>can not add members</p>
       }
 
       <div style={{
         background: "#3b1b27"
       }} class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
-          users[0].userEmail === "" ? <>No users</> : users.map((ele) => (
+          Array.isArray(users) === false ? <div className="container" style={{
+            textAlign: "left",
+            display: "flex"
+          }}>
+            <h4 style={{
+              color: "#fffffe",
+              fontWeight: 600,
+              fontSize: 45
+            }}>No Members</h4>
+
+          </div> : users.map((ele) => (
             <>
               <div className="col" onClick={() => alert(ele._id)}>
                 <Card
@@ -154,7 +165,17 @@ function TeamDetail({ }) {
         background: "#3b1b27"
       }} class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         {
-          projects.map((item) => {
+          Array.isArray(projects) === false ? <div className="container" style={{
+            textAlign: "left",
+            display: "flex"
+          }}>
+            <h4 style={{
+              color: "#fffffe",
+              fontWeight: 600,
+              fontSize: 45
+            }}>No Projects</h4>
+
+          </div> : projects.map((item) => {
             let RD = Math.round((new Date(item.SubmissionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) + 1
             return (
               <>
@@ -293,11 +314,14 @@ export function AddMemBer({ teamid }) {
   };
   return (
     <>
-      <button onClick={showModal}>add member</button>
-      <Modal title="add user" open={isModalOpen} onCancel={handleCancel}>
+      <Button type="primary" onClick={showModal}>
+        Add MEmber
+      </Button>
+      <Modal title="add Member" open={isModalOpen} onCancel={handleCancel}>
         <TextField id="outlined-basic" onChange={(e) => setState(e.target.value)} name="user Id" placeholder='Add user Id ' label="add user Id" variant="outlined" />
         <button onClick={handleOk}>add member</button>
       </Modal>
     </>
   )
 }
+

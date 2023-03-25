@@ -1,4 +1,4 @@
-import { useState } from '@hookstate/core'
+import { useHookstate, useState } from '@hookstate/core'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { usernameState, CurTeam } from '../../Helper/globeState'
@@ -11,7 +11,7 @@ import ProjCreate from "../../Project/Create"
 function Team() {
   const router = useRouter()
   const [userteams, setUserteams] = React.useState([UserTeams])
-  const userDetails = useState(usernameState)
+  const userDetails = useHookstate(usernameState)
   const [user, setUser] = React.useState(userDetailsIS)
   const [err, setError] = React.useState()
 
@@ -74,13 +74,13 @@ function Team() {
 
       {
         (Array.isArray(userteams)) && userteams.length >= 3 ? <>You only can have 3 teams , delete one to add a new</> : <AddTeam userId={user._id} />
-      } <AddTeam userId={user._id} />
+      } 
 
       <Row class=" align-items-center justify-content-center" style={{
         background: "#3b1b27"
       }}>
         {
-          userteams[0].teamName === "" || Array.isArray(userteams) === false ? <div className="container" style={{
+           Array.isArray(userteams) === false ? <div className="container" style={{
             textAlign: "left",
             display: "flex"
           }}>
