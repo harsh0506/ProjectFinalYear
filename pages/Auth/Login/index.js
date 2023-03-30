@@ -30,7 +30,7 @@ import {
 }
   from 'mdb-react-ui-kit';
 //you get auth object
-import { app } from './Chat';
+import { app } from '../FirebaseConfig';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 import axios from 'axios';
 import { useRouter } from 'next/router';

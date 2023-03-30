@@ -1,3 +1,8 @@
+{/*
+const router = useRouter()
+const { id, team_id, TeamD } = router.query 
+*/}
+
 import React from "react";
 import { initializeApp } from "firebase/app";
 //firestore
@@ -7,31 +12,47 @@ import { Button, Modal, Avatar } from "antd";
 import { useHookstate } from "@hookstate/core";
 import { getAuth } from "firebase/auth";
 
-import { app, firebaseConfig } from "../../Auth/FirebaseConfig"
+//import { app, firebaseConfig } from "../../Auth/FirebaseConfig"
 import { useRouter } from "next/router";
-import { usernameState } from "../../Helper/globeState";
+import { CurTeam, usernameState } from "../../Helper/globeState";
 
-const firestore = getFirestore(app);
+export const firebaseConfig2 = {
+    apiKey: "AIzaSyDJk5RRp5g22Oz6Nc8kAU7ZNSQ0XTb3RBk",
+    authDomain: "instagram-7b264.firebaseapp.com",
+    databaseURL: "https://instagram-7b264-default-rtdb.firebaseio.com",
+    projectId: "instagram-7b264",
+    storageBucket: "instagram-7b264.appspot.com",
+    messagingSenderId: "542573384655",
+    appId: "1:542573384655:web:d379ce637576a4bdd5b8ba",
+    measurementId: "G-C1MSPEG5TJ"
+}
+
+export const app2 = initializeApp(firebaseConfig2, "instagram")
+
+const firestore = getFirestore(app2);
 
 export default function Chat(props) {
 
-    const teamID = props.teamId
+    const router = useRouter()
+    const { id, team_id, TeamD } = router.query
 
     const [state, setState] = React.useState({
         uid: "",
         photoURL: "",
-        teamId: ""
+        teamId: "",
     })
 
     const user = useHookstate(usernameState)
 
     React.useState(() => {
+
         setState({
-            teamId: String(teamID),
+            teamId: String(team_id),
             uid: user.get().userId,
             photoURL: user.get().profilepic
         })
-    })
+
+    }, [state])
     return (<div className="App">
         <Chatroom state={state} />
     </div>);
@@ -58,8 +79,6 @@ export function Chatroom({ state }) {
     );
 
     const [value, loading, error] = useCollectionData(messageQuery);
-
-    console.log(value)
 
     const dummy = React.useRef();
 
@@ -88,7 +107,9 @@ export function Chatroom({ state }) {
         return <div>Loading...</div>;
     }
 
-    
+    if (error) {
+        return <div>{error.message}</div>;
+    }
 
 
     return (
@@ -155,7 +176,7 @@ export function Chatroom({ state }) {
 export function ChatMessage(props) {
     const { text, uid, photoURL, teamId, createdAt } = props.message;
     const Uid = props.Uid
-    const Time = new Date(createdAt.toDate()).toISOString().slice(0, 16) || ""
+    const Time = new Date(createdAt.toDate()).toISOString().slice(0, 16)
     const messageClass = uid === Uid ? "sent" : "recieved";
 
     return (

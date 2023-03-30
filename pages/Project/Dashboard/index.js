@@ -95,6 +95,8 @@ function Dummydashboard() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const router = useRouter()
+  const { id, ProjId, team_id, teamId } = router.query
+  console.log(id, ProjId, team_id, teamId)
   const proj = useHookstate(projectState)
 
   const [p, setP] = React.useState(UserProj)
@@ -107,8 +109,8 @@ function Dummydashboard() {
   React.useEffect(() => {
     setP(proj.get())
     setProjectId({
-      _id: router.query.id,
-      projectId: router.query.ProjId
+      _id: id,
+      projectId: ProjId
     })
     getData(router.query.id).then(res => setState(res)).catch(err => console.log(err))
   }, [])
@@ -266,12 +268,12 @@ function Dummydashboard() {
                 <div style={{ overflowY: "scroll", maxWidth: 400, maxHeight: 300 }} class="">
 
                   {
-                  Array.isArray(  state.HighPrioityTask[0]) !== false ? state.HighPrioityTask.map((ele) => (<CardComp
+                    Array.isArray(state.HighPrioityTask[0]) !== false ? state.HighPrioityTask.map((ele) => (<CardComp
                       taskName={ele.taskName}
                       priority={ele.priority}
                       SubmissionDate={ele.SubmissionDate}
                     />))
-                      :  Array.isArray( state.TaskCloseToSubmission[0]) !== false ?
+                      : Array.isArray(state.TaskCloseToSubmission[0]) !== false ?
                         state.TaskCloseToSubmission.map((ele) => (<CardComp
                           taskName={ele.taskName}
                           priority={ele.priority}

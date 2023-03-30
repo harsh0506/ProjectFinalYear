@@ -107,7 +107,7 @@ function Files() {
       }} className="">
 
         <UploadFile Id={Project.projectId} />
-        <Modal title="Update Task" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Modal title="Update Task" open={isModalOpen} onOk={handleOk} style={{width:800}} onCancel={handleCancel}>
           <DocViewer
 
             theme={{

@@ -64,7 +64,7 @@ function TeamDetail({ }) {
       Project.set(data)
       await router.push({
         pathname: `/Project/${id}`,
-        query: { id }
+        query: { id, ProjId: data.projectId, team_id: state._id, teamId: state.teamid }
       })
     } catch (error) {
       console.log(error)

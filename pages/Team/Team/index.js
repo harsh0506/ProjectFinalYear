@@ -166,7 +166,8 @@ const Card = props => {
     await router.push({
       pathname: `/Team/Team/${props.item.teamName}`,
       query: {
-        id: props.item.teamid
+        id: props.item.teamid,
+        team_id : props.item._id
       }
     })
   }
