@@ -9,6 +9,7 @@ import { useHookstate } from '@hookstate/core';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, CheckCircleOutlined } from '@ant-design/icons';
 import { UserProj, UserTeams, userDetailsIS } from '../../Helper/globeState/InitialStae'
 import { TextField } from '@mui/material'
+import VideoCall from "../../VideoCall"
 const { Meta } = Card;
 import Chat from "./Chat"
 
@@ -86,6 +87,8 @@ function TeamDetail({ }) {
         {state.teamName}</h2>
 
       <Chat teamId={state._id} />
+
+      <VideoCall/>
 
       <Divider orientation="left" style={{ width: 100 }}>Team Members</Divider>
       {

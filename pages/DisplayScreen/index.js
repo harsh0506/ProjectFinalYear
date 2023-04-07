@@ -23,20 +23,13 @@ import { useRouter } from 'next/router';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DisplayProjectList from './DsiplayProjectList';
-import { EditOutlined, UserOutlined,UsergroupDeleteOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, InfoCircleOutlined } from '@ant-design/icons';
+import { EditOutlined, UserOutlined, UsergroupDeleteOutlined, EllipsisOutlined, SettingOutlined, DeleteOutlined, FireTwoTone, InfoCircleOutlined } from '@ant-design/icons';
 
+import VideoCall from "../VideoCall"
+import { useHookstate } from '@hookstate/core';
 
 const drawerWidth = 240;
 
-const Card = props => (
-    <Panel {...props} bordered style={{ margin: 8, minWidth: 300 }} header={props.title} >
-        <p>enenen/fe</p>
-        <p>enenen/fe</p>
-        <p>enenen/fe</p>
-        <p>enenen/fe</p>
-
-    </Panel>
-);
 
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -103,11 +96,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-export default function MiniDrawer( {user}) {
+export default function MiniDrawer({ user, userImg }) {
     const theme = useTheme();
     const router = useRouter()
     const [open, setOpen] = React.useState(false);
-
+    
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -165,20 +158,21 @@ export default function MiniDrawer( {user}) {
                         Project Collaboration Platform
                     </Typography>
 
+                   
                     <IconButton onClick={() => router.push("/Profile")}>
                         <AccountCircleIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open} style={{ background: ""}}>
-                <DrawerHeader style={{ background: "#120609"}} >
-                    <IconButton onClick={handleDrawerClose} style={{background:"white"}} >
-                        {theme.direction === 'rtl' ? <ChevronRightIcon style={{background:'white'}}/> : <ChevronLeftIcon style={{background:'white'}} />}
+            <Drawer variant="permanent" open={open} style={{ background: "" }}>
+                <DrawerHeader style={{ background: "#120609" }} >
+                    <IconButton onClick={handleDrawerClose} style={{ background: "white" }} >
+                        {theme.direction === 'rtl' ? <ChevronRightIcon style={{ background: 'white' }} /> : <ChevronLeftIcon style={{ background: 'white' }} />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
                 <List style={{
-                     background: "#120609"
+                    background: "#120609"
                 }}>
 
                     <ListItem key={"log out"} disablePadding sx={{ display: 'block' }}>
@@ -197,9 +191,9 @@ export default function MiniDrawer( {user}) {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <Logout style={{background:"white"}} />
+                                <Logout style={{ background: "white" }} />
                             </ListItemIcon >
-                            <ListItemText primary={"logout"} style={{color:"white" , fontSize:17}} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={"logout"} style={{ color: "white", fontSize: 17 }} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 
@@ -219,9 +213,9 @@ export default function MiniDrawer( {user}) {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <UsergroupDeleteOutlined style={{background:"white"}} />
+                                <UsergroupDeleteOutlined style={{ background: "white" }} />
                             </ListItemIcon>
-                            <ListItemText primary={" Team"} style={{color:"white "}} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={" Team"} style={{ color: "white " }} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 
@@ -241,9 +235,9 @@ export default function MiniDrawer( {user}) {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <AddBoxIcon style={{background:"white"}}/>
+                                <AddBoxIcon style={{ background: "white" }} />
                             </ListItemIcon>
-                            <ListItemText primary={"Create project"} style={{color:"white"}} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={"Create project"} style={{ color: "white" }} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
 
@@ -263,10 +257,12 @@ export default function MiniDrawer( {user}) {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <UserOutlined style={{background:"white"}}/>                            </ListItemIcon>
-                            <ListItemText primary={"Personal Projects"} style={{color:"white"}} sx={{ opacity: open ? 1 : 0 }} />
+                                <UserOutlined style={{ background: "white" }} />                            </ListItemIcon>
+                            <ListItemText primary={"Personal Projects"} style={{ color: "white" }} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
+
+                    <VideoCall />
 
                 </List>
                 <Divider />
@@ -277,7 +273,7 @@ export default function MiniDrawer( {user}) {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 <Row class="d-flex align-items-center justify-content-center">
-                    <DisplayProjectList  user={user}/>
+                    <DisplayProjectList user={user} />
                 </Row>
             </Box>
 
