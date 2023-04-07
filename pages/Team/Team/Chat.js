@@ -176,7 +176,6 @@ export function Chatroom({ state }) {
 export function ChatMessage(props) {
     const { text, uid, photoURL, teamId, createdAt } = props.message;
     const Uid = props.Uid
-    const Time = new Date(createdAt.toDate()).toISOString().slice(0, 16)
     const messageClass = uid === Uid ? "sent" : "recieved";
 
     return (
@@ -192,16 +191,14 @@ export function ChatMessage(props) {
                 alignItems: "center",
                 flexDirection: messageClass === "sent" ? "row" : "row-reverse"
             }}>
-                <img src={photoURL} alt="profile" />
+                <Avatar src={photoURL} alt="profile" />
                 <p style={{
                     color: "black",
                     background: "#0b93f6",
                     alignSelf: "flex-end",
                 }}>{text}</p>
             </div>
-            <div >
-                <span>{Time}</span>
-            </div>
+            
         </div>
     );
 }

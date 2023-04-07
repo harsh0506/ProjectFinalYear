@@ -84,6 +84,8 @@ function Login() {
 
   const SIWG = async () => {
     try {
+      alert("the code is wriiten but it is under testing")
+      /*
       const provider = new GoogleAuthProvider();
       const user = await signInWithPopup(auth, provider);
       const userData = {
@@ -94,6 +96,7 @@ function Login() {
       }
 
       return userData
+      */
     } catch (error) {
       setError(error)
     }
